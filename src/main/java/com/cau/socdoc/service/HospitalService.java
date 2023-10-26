@@ -2,6 +2,9 @@ package com.cau.socdoc.service;
 
 import com.cau.socdoc.dto.RequestAddressDto;
 import com.cau.socdoc.dto.ResponseHospitalDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
@@ -38,6 +41,7 @@ public class HospitalService {
         String address2 = URLEncoder.encode(requestAddressDto.getAddress2(), "UTF-8");
         HttpURLConnection conn = (HttpURLConnection) new URL(LIST_URL + "&Q0=" + address1 + "&Q1=" + address2).openConnection();
         conn.connect();
+
         BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
         StringBuilder st = new StringBuilder();
@@ -50,10 +54,10 @@ public class HospitalService {
         String jsonPrettyPrintString = xmlJSONObj.toString(4);
         log.info(jsonPrettyPrintString);
 
-        // JSON에서 필요한 정보만 추출하는 로직 작성 필요
-
-
-        return null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonPrettyPrintString);
+        JsonNode items = jsonNode.get("response").get("body").get("items").get("item");
+        return objectMapper.readValue(items.toString(), new TypeReference<>() {});
     }
 
 }
