@@ -27,7 +27,17 @@ public enum ResponseCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
 
     // 200 OK
-    HOSPITAL_READ_SUCCESS(HttpStatus.OK, true, "병원 정보 조회 성공");
+    HOSPITAL_READ_SUCCESS(HttpStatus.OK, true, "병원 정보 조회 성공"),
+    USER_READ_SUCCESS(HttpStatus.OK, true, "유저 정보 조회 성공"),
+    USER_UPDATE_SUCCESS(HttpStatus.OK, true, "유저 정보 수정 성공"),
+    USER_DELETE_SUCCESS(HttpStatus.OK, true, "유저 정보 삭제 성공"),
+    REVIEW_READ_SUCCESS(HttpStatus.OK, true, "리뷰 정보 조회 성공"),
+    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, true, "리뷰 정보 수정 성공"),
+    REVIEW_DELETE_SUCCESS(HttpStatus.OK, true, "리뷰 정보 삭제 성공"),
+
+    // 201 Created
+    USER_CREATE_SUCCESS(HttpStatus.CREATED, true, "유저 생성 성공"),
+    REVIEW_CREATE_SUCCESS(HttpStatus.CREATED, true, "리뷰 생성 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;
