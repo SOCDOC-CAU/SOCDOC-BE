@@ -1,10 +1,11 @@
 package com.cau.socdoc.service;
 
-import com.cau.socdoc.dto.RequestAddressDto;
-import com.cau.socdoc.dto.ResponseHospitalDto;
+import com.cau.socdoc.domain.Hospital;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -35,29 +35,40 @@ public class HospitalService {
     @Value("${DETAIL_POS_URL}")
     private String DETAIL_POS_URL;
 
-    // 단순 시-구 입력받아 병원 목록 조회
-    public List<ResponseHospitalDto> findHospitalByAddress(RequestAddressDto requestAddressDto) throws IOException {
-        String address1 = URLEncoder.encode(requestAddressDto.getAddress1(), "UTF-8");
-        String address2 = URLEncoder.encode(requestAddressDto.getAddress2(), "UTF-8");
-        HttpURLConnection conn = (HttpURLConnection) new URL(LIST_URL + "&Q0=" + address1 + "&Q1=" + address2).openConnection();
-        conn.connect();
 
-        BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
-        StringBuilder st = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            st.append(line);
+    /* openAPI 데이터 가져와서 firebase에 저장: (1) 병원 목록 조회
+    public void findHospitalByAddress() throws IOException {
+
+        for(int i=1; i<=1868; i++) {
+            log.info("pageNo" + i + " 조회 시작");
+            HttpURLConnection conn = (HttpURLConnection) new URL(LIST_URL + "&Q0=" + "서울" + "&pageNo=" + i).openConnection();
+            conn.connect();
+
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
+            StringBuilder st = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                st.append(line);
+            }
+
+            JSONObject xmlJSONObj = XML.toJSONObject(st.toString());
+            String jsonPrettyPrintString = xmlJSONObj.toString(4);
+            // log.info(jsonPrettyPrintString);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonPrettyPrintString);
+            JsonNode items = jsonNode.get("response").get("body").get("items").get("item");
+
+            // firebase에 저장
+            log.info("pageNo" + i + " firebase에 저장 시작");
+            Firestore db = FirestoreClient.getFirestore();
+
+            for (JsonNode item : items) {
+                Hospital hospital = objectMapper.readValue(item.toString(), new TypeReference<>() {});
+                db.collection("hospital").document(hospital.getHpid()).set(hospital);
+            }
+            log.info("pageNo" + i + " firebase에 저장 완료");
         }
-
-        JSONObject xmlJSONObj = XML.toJSONObject(st.toString());
-        String jsonPrettyPrintString = xmlJSONObj.toString(4);
-        log.info(jsonPrettyPrintString);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(jsonPrettyPrintString);
-        JsonNode items = jsonNode.get("response").get("body").get("items").get("item");
-        return objectMapper.readValue(items.toString(), new TypeReference<>() {});
-    }
-
+    }*/
 }
