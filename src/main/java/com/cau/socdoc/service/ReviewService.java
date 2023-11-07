@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    public List<ResponseReviewDto> readReviewByUserId(String userId) { // 유저 ID로 리뷰 조회
+    public List<ResponseReviewDto> readReviewByUserId(String userId) throws ExecutionException, InterruptedException { // 유저 ID로 리뷰 조회
         List<Review> reviews = reviewRepository.readReviewByUserId(userId);
         return reviews.stream()
                 .map(review -> ResponseReviewDto.builder()
@@ -31,7 +32,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public List<ResponseReviewDto> readReviewByHospitalId(String hospitalId) { // 병원 ID로 리뷰 조회
+    public List<ResponseReviewDto> readReviewByHospitalId(String hospitalId) throws ExecutionException, InterruptedException { // 병원 ID로 리뷰 조회
         List<Review> reviews = reviewRepository.readReviewByHospitalId(hospitalId);
         return reviews.stream()
                 .map(review -> ResponseReviewDto.builder()
@@ -43,7 +44,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public String createReview(CreateReviewDto createReviewDto) { // 리뷰 생성 후 리뷰 고유 ID 리턴
+    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException { // 리뷰 생성 후 리뷰 고유 ID 리턴
         return reviewRepository.createReview(createReviewDto);
     }
 
