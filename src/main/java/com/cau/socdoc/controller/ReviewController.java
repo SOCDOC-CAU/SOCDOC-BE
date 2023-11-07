@@ -1,15 +1,14 @@
 package com.cau.socdoc.controller;
 
-import com.cau.socdoc.service.HospitalService;
+import com.cau.socdoc.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/hospital")
+@RequestMapping("/api/review")
 @RestController
-public class HospitalController {
+public class ReviewController {
 
-    private final HospitalService hospitalService;
-
+    private final ReviewService reviewService;
 }
