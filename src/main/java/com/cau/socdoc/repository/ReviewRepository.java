@@ -1,16 +1,17 @@
 package com.cau.socdoc.repository;
 
+import com.cau.socdoc.domain.Review;
 import com.cau.socdoc.dto.request.CreateReviewDto;
 import com.cau.socdoc.dto.request.UpdateReviewDto;
-import com.cau.socdoc.dto.response.ResponseReviewDto;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface ReviewRepository {
 
-    List<ResponseReviewDto> readReviewByUserId(String userId);
-    List<ResponseReviewDto> readReviewByHospitalId(String hospitalId);
+    List<Review> readReviewByUserId(String userId);
+    List<Review> readReviewByHospitalId(String hospitalId);
     String createReview(CreateReviewDto createReviewDto);
-    void updateReview(UpdateReviewDto updateReviewDto);
+    void updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException;
     void deleteReview(String reviewId);
 }
