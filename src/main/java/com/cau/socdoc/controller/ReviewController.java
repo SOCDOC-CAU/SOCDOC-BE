@@ -9,6 +9,7 @@ import com.cau.socdoc.util.api.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -20,13 +21,13 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/read/user/{userId}")
-    public ApiResponse<List<ResponseReviewDto>> readReviewByUserId(@PathVariable String userId) throws ExecutionException, InterruptedException {
-        return ApiResponse.success(reviewService.readReviewByUserId(userId), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
+    public ApiResponse<List<ResponseReviewDto>> readReviewByUserId(@PathVariable String userId) throws ExecutionException, InterruptedException, IOException {
+        return ApiResponse.success(reviewService.readReview(userId, 0), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
     }
 
     @GetMapping("/read/hospital/{hospitalId}")
-    public ApiResponse<List<ResponseReviewDto>> readReviewByHospitalId(@PathVariable String hospitalId) throws ExecutionException, InterruptedException {
-        return ApiResponse.success(reviewService.readReviewByHospitalId(hospitalId), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
+    public ApiResponse<List<ResponseReviewDto>> readReviewByHospitalId(@PathVariable String hospitalId) throws ExecutionException, InterruptedException, IOException {
+        return ApiResponse.success(reviewService.readReview(hospitalId, 1), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
     }
 
     @PostMapping("/create")

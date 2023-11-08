@@ -8,11 +8,15 @@ import com.cau.socdoc.util.exception.ReviewException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Repository
 public class ReviewRepositoryImpl implements ReviewRepository {
@@ -23,28 +27,34 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     public static final String CONTENT = "content";
     public static final String RATING = "rating";
 
+    @Value("@{IMAGE_DIL}")
+    private String IMAGE_DIR;
+
     @Override
-    public List<Review> readReviewByUserId(String userId) throws ExecutionException, InterruptedException {
+    public Map<String, Review> readReview(String id, int type) throws ExecutionException, InterruptedException {
+        Map<String, Review> reviews = new HashMap<>();
         CollectionReference reviewCollection = FirestoreClient.getFirestore().collection(COLLECTION_NAME);
-        // userId 필드가 userId와 동일한 리뷰를 FB에서 가져옴
-        Query query = reviewCollection.whereEqualTo(USER_ID, userId);
+        Query query;
+        if(type == 0){ // 유저 ID로 리뷰 조회
+            query = reviewCollection.whereEqualTo(USER_ID, id);
+        } else { // 병원 ID로 리뷰 조회
+            query = reviewCollection.whereEqualTo(HOSPITAL_ID, id);
+        }
         List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
-        return querySnapshot.stream().map(document -> document.toObject(Review.class)).collect(Collectors.toList());
+        for(QueryDocumentSnapshot document : querySnapshot){
+            reviews.put(document.getId(), document.toObject(Review.class));
+        }
+        return reviews;
     }
 
     @Override
-    public List<Review> readReviewByHospitalId(String hospitalId) throws ExecutionException, InterruptedException {
-        CollectionReference reviewCollection = FirestoreClient.getFirestore().collection(COLLECTION_NAME);
-        Query query = reviewCollection.whereEqualTo(HOSPITAL_ID, hospitalId);
-        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
-        return querySnapshot.stream().map(document -> document.toObject(Review.class)).collect(Collectors.toList());
-    }
-
-    @Override
-    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
+    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
         Firestore db = FirestoreClient.getFirestore();
         Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
         ApiFuture<DocumentReference> docRef = db.collection(COLLECTION_NAME).add(review);
+
+        // 수신한 이미지 디렉토리에 저장
+        createReviewDto.getImage().transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
         return docRef.get().getId();
     }
 
