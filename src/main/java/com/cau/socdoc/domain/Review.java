@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
 
-    private String reviewId; // 리뷰 고유 ID
     private String userId; // 작성한 유저 ID
     private String hospitalId; // 리뷰남긴 병원 ID
     private String content; // 내용

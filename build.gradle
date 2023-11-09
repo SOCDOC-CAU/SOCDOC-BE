@@ -34,6 +34,18 @@ dependencies {
 
 	// firebase
 	implementation 'com.google.firebase:firebase-admin:8.0.0'
+
+	// image processing
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+
+	// for @Transactional
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+
+	// Swagger dependency
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 }
 
 tasks.named('test') {
