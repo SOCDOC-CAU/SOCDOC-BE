@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Config for Build ###
-config/application.yml
+src/main/resources/application.properties
