@@ -16,8 +16,9 @@ public class User {
     private String address1; // 서울시
     private String address2; // 동작구
 
-    public static User of(String userName, String userEmail, String address1, String address2) {
+    public static User of(String userId, String userName, String userEmail, String address1, String address2) {
         User user = new User();
+        user.userId = userId;
         user.userName = userName;
         user.userEmail = userEmail;
         user.address1 = address1;
