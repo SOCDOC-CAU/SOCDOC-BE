@@ -31,26 +31,17 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    @Value("${IMAGE_DIR}")
-    private static String IMAGE_DIR;
-
-    @Transactional(readOnly = true)
-    public List<ResponseReviewDto> readReview(String id, int type) throws ExecutionException, InterruptedException, IOException { // 유저 ID로 리뷰 조회
-        Map<String, Review> reviews = reviewRepository.readReview(id, type);
-        List<ResponseReviewDto> reviewDtos = new ArrayList<>();
-
-        // Map을 순회하며 Dto를 생성
-        for(Map.Entry<String, Review> entry : reviews.entrySet()){
-            ResponseReviewDto reviewDto = ResponseReviewDto.builder()
-                    .reviewId(entry.getKey())
-                    .userName(userRepository.findNameById(entry.getValue().getUserId()))
-                    .createdAt(entry.getValue().getCreatedAt())
-                    .rating(entry.getValue().getRating())
-                    .image(readImage(entry.getKey()))
-                    .build();
-            reviewDtos.add(reviewDto);
-        }
-        return reviewDtos;
+    public List<ResponseReviewDto> readReviewByUserId(String userId) throws ExecutionException, InterruptedException { // 유저 ID로 리뷰 조회
+        List<Review> reviews = reviewRepository.readReviewByUserId(userId);
+        return reviews.stream()
+                .map(review -> ResponseReviewDto.builder()
+                        .reviewId(review.getReviewId())
+                        .userName(userRepository.findNameById(review.getUserId()))
+                        .userName("")
+                        .createdAt(review.getCreatedAt())
+                        .rating(review.getRating())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional
