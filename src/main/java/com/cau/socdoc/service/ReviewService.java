@@ -28,20 +28,27 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class ReviewService {
 
+    @Value("${IMAGE_DIR}")
+    private static String IMAGE_DIR;
+
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    public List<ResponseReviewDto> readReviewByUserId(String userId) throws ExecutionException, InterruptedException { // 유저 ID로 리뷰 조회
-        List<Review> reviews = reviewRepository.readReviewByUserId(userId);
-        return reviews.stream()
-                .map(review -> ResponseReviewDto.builder()
-                        .reviewId(review.getReviewId())
-                        .userName(userRepository.findNameById(review.getUserId()))
-                        .userName("")
-                        .createdAt(review.getCreatedAt())
-                        .rating(review.getRating())
-                        .build())
-                .collect(Collectors.toList());
+    public List<ResponseReviewDto> readReview(String userId, int type) throws ExecutionException, InterruptedException, IOException { // 유저 ID로 리뷰 조회
+        Map<String, Review> reviews = reviewRepository.readReview(userId, type);
+        List<ResponseReviewDto> responseReviewDtos = new ArrayList<>();
+        for (String reviewId: reviews.keySet()){
+            ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
+                    .reviewId(reviewId)
+                    .userName(userRepository.findNameById(reviews.get(reviewId).getUserId()))
+                    .createdAt(reviews.get(reviewId).getCreatedAt())
+                    .rating(reviews.get(reviewId).getRating())
+                    .content(reviews.get(reviewId).getContent())
+                    .image(readImage(reviewId))
+                    .build();
+            responseReviewDtos.add(responseReviewDto);
+        }
+        return responseReviewDtos;
     }
 
     @Transactional
