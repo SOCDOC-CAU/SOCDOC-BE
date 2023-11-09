@@ -2,6 +2,7 @@ FROM openjdk:11-slim as builder
 
 WORKDIR /build
 
+COPY . ./
 COPY config/application.properties ./src/main/resources/application.properties
 RUN ./gradlew build
 
