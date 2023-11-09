@@ -4,6 +4,8 @@ WORKDIR /build
 
 COPY . ./
 COPY config/application.properties ./src/main/resources/application.properties
+COPY config/serviceAccountKey.json ./src/main/resources/serviceAccountKey.json
+
 RUN ./gradlew build
 
 FROM openjdk:11-slim
