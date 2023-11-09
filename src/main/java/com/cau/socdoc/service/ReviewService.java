@@ -11,9 +11,10 @@ import com.cau.socdoc.util.exception.ReviewException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.*;
@@ -31,8 +32,9 @@ public class ReviewService {
     private final UserRepository userRepository;
 
     @Value("${IMAGE_DIR}")
-    private String IMAGE_DIR;
+    private static String IMAGE_DIR;
 
+    @Transactional(readOnly = true)
     public List<ResponseReviewDto> readReview(String id, int type) throws ExecutionException, InterruptedException, IOException { // 유저 ID로 리뷰 조회
         Map<String, Review> reviews = reviewRepository.readReview(id, type);
         List<ResponseReviewDto> reviewDtos = new ArrayList<>();
@@ -51,6 +53,7 @@ public class ReviewService {
         return reviewDtos;
     }
 
+    @Transactional
     public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException { // 리뷰 생성 후 리뷰 고유 ID 리턴
         try {
             return reviewRepository.createReview(createReviewDto);
@@ -59,10 +62,12 @@ public class ReviewService {
         }
     }
 
+    @Transactional
     public void updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException { // 리뷰 수정
         reviewRepository.updateReview(updateReviewDto);
     }
 
+    @Transactional
     public void deleteReview(String reviewId) { // 리뷰 삭제
         reviewRepository.deleteReview(reviewId);
     }
