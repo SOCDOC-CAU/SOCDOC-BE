@@ -5,7 +5,7 @@ import com.cau.socdoc.dto.request.CreateReviewDto;
 import com.cau.socdoc.dto.request.UpdateReviewDto;
 import com.cau.socdoc.dto.response.ResponseReviewDto;
 import com.cau.socdoc.repository.ReviewRepository;
-import com.cau.socdoc.repository.UserRepository;
+// import com.cau.socdoc.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +18,15 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
+    // private final UserRepository userRepository;
 
     public List<ResponseReviewDto> readReviewByUserId(String userId) throws ExecutionException, InterruptedException { // 유저 ID로 리뷰 조회
         List<Review> reviews = reviewRepository.readReviewByUserId(userId);
         return reviews.stream()
                 .map(review -> ResponseReviewDto.builder()
                         .reviewId(review.getReviewId())
-                        .userName(userRepository.findNameById(review.getUserId()))
+                        // .userName(userRepository.findNameById(review.getUserId()))
+                        .userName("")
                         .createdAt(review.getCreatedAt())
                         .rating(review.getRating())
                         .build())
@@ -37,7 +38,8 @@ public class ReviewService {
         return reviews.stream()
                 .map(review -> ResponseReviewDto.builder()
                         .reviewId(review.getReviewId())
-                        .userName(userRepository.findNameById(review.getUserId()))
+                        // .userName(userRepository.findNameById(review.getUserId()))
+                        .userName("")
                         .createdAt(review.getCreatedAt())
                         .rating(review.getRating())
                         .build())
