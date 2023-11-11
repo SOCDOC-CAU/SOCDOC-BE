@@ -1,4 +1,4 @@
-package com.cau.socdoc.service;
+package com.cau.socdoc.service.impl;
 
 import com.cau.socdoc.domain.Review;
 import com.cau.socdoc.dto.request.CreateReviewDto;
@@ -6,6 +6,7 @@ import com.cau.socdoc.dto.request.UpdateReviewDto;
 import com.cau.socdoc.dto.response.ResponseReviewDto;
 import com.cau.socdoc.repository.ReviewRepository;
 import com.cau.socdoc.repository.UserRepository;
+import com.cau.socdoc.service.ReviewService;
 import com.cau.socdoc.util.api.ResponseCode;
 import com.cau.socdoc.util.exception.ReviewException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 @Service
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
 
     @Value("${IMAGE_DIR}")
     private static String IMAGE_DIR;
@@ -34,14 +35,16 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    public List<ResponseReviewDto> readReview(String userId, int type) throws ExecutionException, InterruptedException, IOException { // 유저 ID로 리뷰 조회
+    // 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<ResponseReviewDto> readReview(String userId, int type) throws ExecutionException, InterruptedException, IOException {
         Map<String, Review> reviews = reviewRepository.readReview(userId, type);
         List<ResponseReviewDto> responseReviewDtos = new ArrayList<>();
         for (String reviewId: reviews.keySet()){
             ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
                     .reviewId(reviewId)
                     .userName(userRepository.findNameById(reviews.get(reviewId).getUserId()))
-                    .createdAt(reviews.get(reviewId).getCreatedAt())
+                    .createdAt(reviews.get(reviewId).getCreatedAt().toString())
                     .rating(reviews.get(reviewId).getRating())
                     .content(reviews.get(reviewId).getContent())
                     .image(readImage(reviewId))
@@ -51,22 +54,26 @@ public class ReviewServiceImpl implements ReviewService{
         return responseReviewDtos;
     }
 
+    // 리뷰 생성
     @Transactional
-    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException { // 리뷰 생성 후 리뷰 고유 ID 리턴
+    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
         try {
-            return reviewRepository.createReview(createReviewDto);
+            Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
+            return reviewRepository.createReview(review, createReviewDto.getImage());
         } catch (IOException e){
             throw new ReviewException(ResponseCode.IMAGE_UPLOAD_ERROR);
         }
     }
 
+    // 리뷰 수정
     @Transactional
-    public void updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException { // 리뷰 수정
-        reviewRepository.updateReview(updateReviewDto);
+    public void updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException {
+        reviewRepository.updateReview(updateReviewDto.getReviewId(), updateReviewDto.getContent(), updateReviewDto.getRating());
     }
 
+    // 리뷰 삭제
     @Transactional
-    public void deleteReview(String reviewId) { // 리뷰 삭제
+    public void deleteReview(String reviewId) {
         reviewRepository.deleteReview(reviewId);
     }
 
