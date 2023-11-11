@@ -18,6 +18,7 @@ public class MessageUtil {
     public static final String TYPE_HOSPITAL = "dgidIdName";
     public static final String ADDRESS1_HOSPITAL = "address1";
     public static final String ADDRESS2_HOSPITAL = "address2";
+    public static final String DUTY_NAME = "dutyName";
 
     // 리뷰
     public static final String COLLECTION_REVIEW = "review";
