@@ -39,6 +39,7 @@ public enum ResponseCode {
     REVIEW_READ_SUCCESS(HttpStatus.OK, true, "리뷰 정보 조회 성공"),
     REVIEW_UPDATE_SUCCESS(HttpStatus.OK, true, "리뷰 정보 수정 성공"),
     REVIEW_DELETE_SUCCESS(HttpStatus.OK, true, "리뷰 정보 삭제 성공"),
+    LIKE_DELETE_SUCCESS(HttpStatus.OK, true, "좋아요 삭제 성공"),
 
     // 201 Created
     USER_CREATE_SUCCESS(HttpStatus.CREATED, true, "유저 생성 성공"),
