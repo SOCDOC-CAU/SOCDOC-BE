@@ -1,12 +1,10 @@
 package com.cau.socdoc.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Hospital {
 
     private int rnum; // 순번
@@ -48,4 +46,5 @@ public class Hospital {
     private int postCdn2; // 우편번호2
     private double wgs84Lon; // 병원경도
     private double wgs84Lat; // 병원위도
+    private List<String> dgidIdName; // 진료과목
 }

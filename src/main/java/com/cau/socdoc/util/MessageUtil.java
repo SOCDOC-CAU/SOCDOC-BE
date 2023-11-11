@@ -14,7 +14,11 @@ public class MessageUtil {
     public static final String ADDRESS2 = "address2";
 
     // 병원
-
+    public static final String COLLECTION_HOSPITAL = "hospital";
+    public static final String TYPE_HOSPITAL = "dgidIdName";
+    public static final String ADDRESS1_HOSPITAL = "address1";
+    public static final String ADDRESS2_HOSPITAL = "address2";
+    public static final String DUTY_NAME = "dutyName";
 
     // 리뷰
     public static final String COLLECTION_REVIEW = "review";
@@ -22,6 +26,6 @@ public class MessageUtil {
     public static final String CONTENT = "content";
     public static final String RATING = "rating";
 
-    // 기타
-
+    // 좋아요
+    public static final String COLLECTION_LIKE = "like";
 }

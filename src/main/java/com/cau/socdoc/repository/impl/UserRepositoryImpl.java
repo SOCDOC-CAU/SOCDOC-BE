@@ -1,6 +1,7 @@
-package com.cau.socdoc.repository;
+package com.cau.socdoc.repository.impl;
 
 import com.cau.socdoc.domain.User;
+import com.cau.socdoc.repository.UserRepository;
 import com.cau.socdoc.util.MessageUtil;
 import com.cau.socdoc.util.api.ResponseCode;
 import com.cau.socdoc.util.exception.UserException;
@@ -8,21 +9,22 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ExecutionException;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
 
     // 회원가입
     @Override
-    public String createUser(String userId, String userName, String userEmail, String address1, String address2) {
+    public void createUser(String userId, String userName, String userEmail, String address1, String address2) {
         Firestore db = FirestoreClient.getFirestore();
         User user = User.of(userId, userName, userEmail, address1, address2);
         db.collection(MessageUtil.COLLECTION_USER).document(userId).set(user);
-        return userId;
     }
 
     // id로 유저명 조회
@@ -74,8 +76,9 @@ public class UserRepositoryImpl implements UserRepository{
 
     // 회원탈퇴
     @Override
-    public void deleteUser(String userId) {
+    public void deleteUser(String userId) throws FirebaseAuthException {
         Firestore db = FirestoreClient.getFirestore();
         db.collection(MessageUtil.COLLECTION_USER).document(userId).delete();
+        FirebaseAuth.getInstance().deleteUser(userId);
     }
 }

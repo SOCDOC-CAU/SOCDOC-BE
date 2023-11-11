@@ -1,8 +1,7 @@
-package com.cau.socdoc.repository;
+package com.cau.socdoc.repository.impl;
 
 import com.cau.socdoc.domain.Review;
-import com.cau.socdoc.dto.request.CreateReviewDto;
-import com.cau.socdoc.dto.request.UpdateReviewDto;
+import com.cau.socdoc.repository.ReviewRepository;
 import com.cau.socdoc.util.MessageUtil;
 import com.cau.socdoc.util.api.ResponseCode;
 import com.cau.socdoc.util.exception.ReviewException;
@@ -11,6 +10,7 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,32 +43,48 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
-    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
+    public String createReview(Review review, MultipartFile image) throws ExecutionException, InterruptedException, IOException {
         Firestore db = FirestoreClient.getFirestore();
-        Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
         ApiFuture<DocumentReference> docRef = db.collection(MessageUtil.COLLECTION_REVIEW).add(review);
 
         // 수신한 이미지 디렉토리에 저장
-        createReviewDto.getImage().transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
+        image.transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
         return docRef.get().getId();
     }
 
     @Override
-    public void updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException {
+    public void updateReview(String reviewId, String contents, int rating) throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection(MessageUtil.COLLECTION_REVIEW).document(updateReviewDto.getReviewId());
+        DocumentReference docRef = db.collection(MessageUtil.COLLECTION_REVIEW).document(reviewId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = future.get();
         if (!document.exists()) {
             throw new ReviewException(ResponseCode.REVIEW_NOT_FOUND);
         }
-        docRef.update(MessageUtil.CONTENT, updateReviewDto.getContent());
-        docRef.update(MessageUtil.RATING, updateReviewDto.getRating());
+        docRef.update(MessageUtil.CONTENT, contents);
+        docRef.update(MessageUtil.RATING, rating);
     }
 
     @Override
     public void deleteReview(String reviewId) {
         Firestore db = FirestoreClient.getFirestore();
         db.collection(MessageUtil.COLLECTION_REVIEW).document(reviewId).delete();
+    }
+
+    @Override
+    public double getReviewAverage(String hospitalId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        CollectionReference reviewCollection = db.collection(MessageUtil.COLLECTION_REVIEW);
+        Query query = reviewCollection.whereEqualTo(MessageUtil.HOSPITAL_ID, hospitalId);
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        if(querySnapshot.isEmpty()){
+            return 0.0;
+        }
+        int sum = 0;
+        for(QueryDocumentSnapshot document : querySnapshot){
+            sum += document.toObject(Review.class).getRating();
+        }
+        double answer = (double)sum / querySnapshot.size();
+        return Math.round(answer * 10) / 10.0;
     }
 }

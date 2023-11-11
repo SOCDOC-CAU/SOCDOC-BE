@@ -43,8 +43,8 @@ public class UserController {
                     .userId(uid)
                     .userName(firebaseAuth.getUser(uid).getDisplayName())
                     .userEmail(firebaseAuth.getUser(uid).getEmail())
-                    .address1("서울")
-                    .address2("동작")
+                    .address1("서울특별시")
+                    .address2("동작구")
                     .build());
         }
         return userService.getUserInfo(uid);
@@ -53,21 +53,21 @@ public class UserController {
     // 유저 주소 수정
     @Operation(summary = "[유저] 유저 주소 수정", description = "userId를 통해 유저 주소를 수정합니다.")
     @PutMapping("/update/address")
-    public void updateUserAddress(UpdateUserAddressDto updateUserAddressDto) throws ExecutionException, InterruptedException {
+    public void updateUserAddress(@RequestBody UpdateUserAddressDto updateUserAddressDto) throws ExecutionException, InterruptedException {
         userService.updateUserAddress(updateUserAddressDto);
     }
 
     // 유저 이름 수정
     @Operation(summary = "[유저] 유저 이름 수정", description = "userId를 통해 유저 이름을 수정합니다.")
     @PutMapping("/update/name")
-    public void updateUserName(UpdateUserNameDto updateUserNameDto) throws ExecutionException, InterruptedException {
+    public void updateUserName(@RequestBody UpdateUserNameDto updateUserNameDto) throws ExecutionException, InterruptedException {
         userService.updateUserName(updateUserNameDto);
     }
 
     // 유저 탈퇴
     @Operation(summary = "[유저] 유저 탈퇴", description = "userId를 통해 유저를 탈퇴시킵니다.")
     @DeleteMapping("/delete/user/{userId}")
-    public void deleteUser(@PathVariable String userId) {
+    public void deleteUser(@PathVariable String userId) throws FirebaseAuthException {
         userService.deleteUser(userId);
     }
 }

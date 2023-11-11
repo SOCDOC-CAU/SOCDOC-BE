@@ -55,7 +55,7 @@ public class ReviewController {
     // 리뷰 삭제
     @Operation(summary = "[리뷰] 리뷰 삭제", description = "리뷰를 삭제합니다.")
     @DeleteMapping("/delete/reviewId/{reviewId}")
-    public ApiResponse<Void> deleteReview(String reviewId) {
+    public ApiResponse<Void> deleteReview(@PathVariable String reviewId) throws ExecutionException, InterruptedException {
         reviewService.deleteReview(reviewId);
         return ApiResponse.success(null, ResponseCode.REVIEW_DELETE_SUCCESS.getMessage());
     }
