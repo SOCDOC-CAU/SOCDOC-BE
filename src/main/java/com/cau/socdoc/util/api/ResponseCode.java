@@ -19,11 +19,13 @@ public enum ResponseCode {
     HOSPITAL_NOT_FOUND(HttpStatus.NOT_FOUND, false, "병원을 찾을 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "유저를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, false, "리뷰를 찾을 수 없습니다."),
+    LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, false, "좋아요를 누르지 않은 병원입니다."),
 
     // 405 Method Not Allowed
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, false, "허용되지 않은 메소드입니다."),
 
     // 409 Conflict
+    LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, false, "이미 좋아요를 누른 병원입니다."),
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
@@ -40,7 +42,8 @@ public enum ResponseCode {
 
     // 201 Created
     USER_CREATE_SUCCESS(HttpStatus.CREATED, true, "유저 생성 성공"),
-    REVIEW_CREATE_SUCCESS(HttpStatus.CREATED, true, "리뷰 생성 성공");
+    REVIEW_CREATE_SUCCESS(HttpStatus.CREATED, true, "리뷰 생성 성공"),
+    LIKE_CREATE_SUCCESS(HttpStatus.CREATED, true, "좋아요 생성 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;
