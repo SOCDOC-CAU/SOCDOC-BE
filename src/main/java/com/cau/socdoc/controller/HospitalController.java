@@ -3,6 +3,7 @@ package com.cau.socdoc.controller;
 import com.cau.socdoc.dto.request.RequestLikeDto;
 import com.cau.socdoc.dto.request.RequestSimpleHospitalDto;
 import com.cau.socdoc.dto.response.ResponseDetailHospitalDto;
+import com.cau.socdoc.dto.response.ResponsePharmacyDto;
 import com.cau.socdoc.dto.response.ResponseSimpleHospitalDto;
 import com.cau.socdoc.service.HospitalService;
 import com.cau.socdoc.util.api.ApiResponse;
@@ -58,5 +59,11 @@ public class HospitalController {
     public ApiResponse<Void> unlikeHospital(@RequestBody RequestLikeDto dto) throws ExecutionException, InterruptedException {
         hospitalService.deleteLike(dto.getUserId(), dto.getHospitalId());
         return ApiResponse.success(null, ResponseCode.LIKE_DELETE_SUCCESS.getMessage());
+    }
+
+    // 특정 병원 근처 약국 조회
+    @GetMapping("/pharmacy/{hospitalId}")
+    public ApiResponse<List<ResponsePharmacyDto>> findPharmacyByHospitalId(@PathVariable String hospitalId) throws ExecutionException, InterruptedException {
+        return ApiResponse.success(hospitalService.findPharmacyByHospitalId(hospitalId), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
 }
