@@ -43,8 +43,8 @@ public class UserController {
                     .userId(uid)
                     .userName(firebaseAuth.getUser(uid).getDisplayName())
                     .userEmail(firebaseAuth.getUser(uid).getEmail())
-                    .address1("서울")
-                    .address2("동작")
+                    .address1("서울특별시")
+                    .address2("동작구")
                     .build());
         }
         return userService.getUserInfo(uid);
