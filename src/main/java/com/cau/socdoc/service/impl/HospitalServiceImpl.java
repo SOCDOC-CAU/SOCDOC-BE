@@ -116,8 +116,7 @@ public class HospitalServiceImpl implements HospitalService {
         time.add(hospital.getDutyTime4s() + " - " + hospital.getDutyTime4c());
         time.add(hospital.getDutyTime5s() + " - " + hospital.getDutyTime5c());
         time.add(hospital.getDutyTime6s() + " - " + hospital.getDutyTime6c());
-        time.add(hospital.getDutyTime7s() + " - " + hospital.getDutyTime7c());
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
             // 현재 형태는 0900 - 1800 이며, 09:00 - 18:00으로 바꿔줘야함
             String[] split = time.get(i).split(" - ");
             String start = split[0];
