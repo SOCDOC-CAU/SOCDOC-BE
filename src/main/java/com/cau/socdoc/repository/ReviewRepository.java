@@ -13,4 +13,5 @@ public interface ReviewRepository {
     String createReview(Review review, MultipartFile image) throws ExecutionException, InterruptedException, IOException;
     void updateReview(String reviewId, String contents, int rating) throws ExecutionException, InterruptedException;
     void deleteReview(String reviewId);
+    int getReviewAverage(String hospitalId) throws ExecutionException, InterruptedException;
 }

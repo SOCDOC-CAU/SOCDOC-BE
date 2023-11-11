@@ -70,4 +70,17 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         Firestore db = FirestoreClient.getFirestore();
         db.collection(MessageUtil.COLLECTION_REVIEW).document(reviewId).delete();
     }
+
+    @Override
+    public int getReviewAverage(String hospitalId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        CollectionReference reviewCollection = db.collection(MessageUtil.COLLECTION_REVIEW);
+        Query query = reviewCollection.whereEqualTo(MessageUtil.HOSPITAL_ID, hospitalId);
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        int sum = 0;
+        for(QueryDocumentSnapshot document : querySnapshot){
+            sum += document.toObject(Review.class).getRating();
+        }
+        return sum / querySnapshot.size();
+    }
 }
