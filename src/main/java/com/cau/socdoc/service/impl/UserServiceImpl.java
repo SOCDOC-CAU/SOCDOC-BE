@@ -1,4 +1,4 @@
-package com.cau.socdoc.service;
+package com.cau.socdoc.service.impl;
 
 import com.cau.socdoc.domain.User;
 import com.cau.socdoc.dto.request.CreateUserDto;
@@ -6,6 +6,8 @@ import com.cau.socdoc.dto.request.UpdateUserAddressDto;
 import com.cau.socdoc.dto.request.UpdateUserNameDto;
 import com.cau.socdoc.dto.response.ResponseUserInfoDto;
 import com.cau.socdoc.repository.UserRepository;
+import com.cau.socdoc.service.UserService;
+import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void deleteUser(String userId) {
+    public void deleteUser(String userId) throws FirebaseAuthException {
         userRepository.deleteUser(userId);
     }
 }

@@ -67,7 +67,7 @@ public class UserController {
     // 유저 탈퇴
     @Operation(summary = "[유저] 유저 탈퇴", description = "userId를 통해 유저를 탈퇴시킵니다.")
     @DeleteMapping("/delete/user/{userId}")
-    public void deleteUser(@PathVariable String userId) {
+    public void deleteUser(@PathVariable String userId) throws FirebaseAuthException {
         userService.deleteUser(userId);
     }
 }
