@@ -46,6 +46,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .build();
     }
 
+    // 특정 지역의 특정 분과 병원 조회
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
@@ -59,6 +60,7 @@ public class HospitalServiceImpl implements HospitalService {
         }).collect(Collectors.toList());
     }
 
+    // 특정 지역의 병원 조회
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByAddress(String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
@@ -72,6 +74,7 @@ public class HospitalServiceImpl implements HospitalService {
         }).collect(Collectors.toList());
     }
 
+    // 유저가 좋아요 한 병원 조회
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByLike(String userId) throws ExecutionException, InterruptedException {
@@ -85,6 +88,7 @@ public class HospitalServiceImpl implements HospitalService {
         }).collect(Collectors.toList());
     }
 
+    // 유저가 특정 병원에 좋아요
     @Override
     @Transactional
     public void saveLike(String userId, String hospitalId) throws ExecutionException, InterruptedException {
@@ -94,6 +98,7 @@ public class HospitalServiceImpl implements HospitalService {
         likeRepository.saveLike(userId, hospitalId);
     }
 
+    // 유저가 특정 병원에 좋아요 취소
     @Override
     @Transactional
     public void deleteLike(String userId, String hospitalId) throws ExecutionException, InterruptedException {

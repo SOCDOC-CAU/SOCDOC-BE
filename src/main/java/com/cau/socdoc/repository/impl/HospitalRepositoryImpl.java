@@ -27,15 +27,32 @@ public class HospitalRepositoryImpl implements HospitalRepository {
 
     // 특정 지역의 특정 진료과목의 병원을 조회 (10개 단위)
     public List<Hospital> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL).whereArrayContains(MessageUtil.TYPE_HOSPITAL, type).whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1).whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
-                .startAt((pageNum-1) * 10).limit(10);
+        int pageSize = 10;
+        int startIdx = (pageNum - 1) * pageSize;
+
+        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+                .whereArrayContains(MessageUtil.TYPE_HOSPITAL, type)
+                .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
+                .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
+                .orderBy("dutyName") // yourOrderByField에는 정렬 기준 필드가 들어가야 합니다.
+                .startAt(startIdx)
+                .limit(pageSize);
         List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
         return querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
     }
 
+
     // 특정 지역의 병원을 조회 (10개 단위)
     public List<Hospital> findHospitalByAddress(String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL).whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1).whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2).startAt((pageNum-1) * 10).limit(10);
+        int pageSize = 10;
+        int startIdx = (pageNum - 1) * pageSize;
+
+        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+                .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
+                .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
+                .orderBy("dutyName") // yourOrderByField에는 정렬 기준 필드가 들어가야 합니다.
+                .startAt(startIdx)
+                .limit(pageSize);
         List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
         return querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
     }
