@@ -1,8 +1,8 @@
 package com.cau.socdoc.service.impl;
 
+import com.cau.socdoc.component.KakaoPharInfo;
 import com.cau.socdoc.domain.Hospital;
-import com.cau.socdoc.dto.response.ResponseDetailHospitalDto;
-import com.cau.socdoc.dto.response.ResponseSimpleHospitalDto;
+import com.cau.socdoc.dto.response.*;
 import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.repository.LikeRepository;
 import com.cau.socdoc.repository.ReviewRepository;
@@ -12,6 +12,7 @@ import com.cau.socdoc.util.exception.HospitalException;
 import com.cau.socdoc.util.exception.LikeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,10 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalRepository hospitalRepository;
     private final ReviewRepository reviewRepository;
     private final LikeRepository likeRepository;
+    private final KakaoPharInfo kakaoPharInfo;
+
+    @Value("${REST_API_KEY}")
+    private String REST_API_KEY;
 
     // 병원 상세정보 조회
     @Override
@@ -107,6 +112,24 @@ public class HospitalServiceImpl implements HospitalService {
         }
         likeRepository.deleteLike(userId, hospitalId);
     }
+
+    // 병원의 약국 조회
+    @Transactional(readOnly = true)
+    public List<ResponsePharmacyDto> findPharmacyByHospitalId(String hospitalId) throws ExecutionException, InterruptedException {
+        Hospital hospital = hospitalRepository.findHospitalDetail(hospitalId);
+        ResponseKakaoDto dto = kakaoPharInfo.getPharInfo(REST_API_KEY, hospital.getWgs84Lat(), hospital.getWgs84Lon());
+
+        List<ResponsePharmacyDto> pharmacies = new ArrayList<>();
+        for (Document document : dto.getDocuments()) {
+            ResponsePharmacyDto pharmacy = ResponsePharmacyDto.builder()
+                    .name(document.getPlace_name())
+                    .address(document.getAddress_name())
+                    .build();
+            pharmacies.add(pharmacy);
+        }
+        return pharmacies;
+    }
+
 
     private List<String> findTime(Hospital hospital) {
         List<String> time = new ArrayList<>();
