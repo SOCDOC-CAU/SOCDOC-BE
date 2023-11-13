@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class HospitalServiceImpl implements HospitalService {

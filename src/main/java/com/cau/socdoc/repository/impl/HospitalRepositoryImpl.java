@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Repository
-@Slf4j
 public class HospitalRepositoryImpl implements HospitalRepository {
 
     // 모든 병원 ID 조회
