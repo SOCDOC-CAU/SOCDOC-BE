@@ -21,4 +21,9 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleHospitalException(HospitalException e) {
         return ApiResponse.fail(e.getResponseCode());
     }
+
+    @ExceptionHandler(LikeException.class)
+    public ApiResponse<Void> handleLikeException(LikeException e) {
+        return ApiResponse.fail(e.getResponseCode());
+    }
 }
