@@ -3,6 +3,8 @@ package com.cau.socdoc.service.impl;
 import com.cau.socdoc.component.KakaoPharInfo;
 import com.cau.socdoc.domain.Hospital;
 import com.cau.socdoc.dto.response.*;
+import com.cau.socdoc.dto.response.kakao.Document;
+import com.cau.socdoc.dto.response.kakao.ResponseKakaoDto;
 import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.repository.LikeRepository;
 import com.cau.socdoc.repository.ReviewRepository;
