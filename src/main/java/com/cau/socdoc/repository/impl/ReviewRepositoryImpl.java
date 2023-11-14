@@ -48,7 +48,9 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         ApiFuture<DocumentReference> docRef = db.collection(MessageUtil.COLLECTION_REVIEW).add(review);
 
         // 수신한 이미지 디렉토리에 저장
-        image.transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
+        if(image != null){
+            image.transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
+        }
         return docRef.get().getId();
     }
 

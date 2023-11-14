@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -40,14 +41,14 @@ public class ReviewController {
     // 리뷰 생성
     @Operation(summary = "[리뷰] 리뷰 생성", description = "리뷰를 생성합니다.")
     @PostMapping("/create")
-    public ApiResponse<String> createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
+    public ApiResponse<String> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
         return ApiResponse.success(reviewService.createReview(createReviewDto), ResponseCode.REVIEW_CREATE_SUCCESS.getMessage());
     }
 
     // 리뷰 수정
     @Operation(summary = "[리뷰] 리뷰 수정", description = "리뷰를 수정합니다.")
     @PutMapping("/update")
-    public ApiResponse<Void> updateReview(UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException {
+    public ApiResponse<Void> updateReview(@RequestBody @Valid UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException {
         reviewService.updateReview(updateReviewDto);
         return ApiResponse.success(null, ResponseCode.REVIEW_UPDATE_SUCCESS.getMessage());
     }

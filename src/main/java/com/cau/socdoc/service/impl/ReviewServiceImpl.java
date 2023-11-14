@@ -87,8 +87,7 @@ public class ReviewServiceImpl implements ReviewService {
             IOUtils.copy(input, os);
             return new CommonsMultipartFile(fileItem);
         } else {
-            // 이미지 파일이 존재하지 않을 경우 예외 처리
-            throw new FileNotFoundException("이미지 파일을 찾을 수 없습니다.");
+            return null;
         }
     }
 }

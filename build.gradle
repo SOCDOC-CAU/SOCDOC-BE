@@ -50,6 +50,9 @@ dependencies {
 	// Webclient dependency
 	implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.15')
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// Validation dependency
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
