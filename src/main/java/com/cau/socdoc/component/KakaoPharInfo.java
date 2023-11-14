@@ -1,6 +1,6 @@
 package com.cau.socdoc.component;
 
-import com.cau.socdoc.dto.response.ResponseKakaoDto;
+import com.cau.socdoc.dto.response.kakao.ResponseKakaoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

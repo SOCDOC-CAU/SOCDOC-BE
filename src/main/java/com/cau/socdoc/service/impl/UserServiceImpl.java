@@ -28,9 +28,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public ResponseUserInfoDto getUserInfo(String userId) throws ExecutionException, InterruptedException {
         User user = userRepository.findUserById(userId);
-        if(user == null) {
-            return null;
-        }
         return ResponseUserInfoDto.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName())

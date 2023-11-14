@@ -1,4 +1,4 @@
-package com.cau.socdoc.dto.response;
+package com.cau.socdoc.dto.response.kakao;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
