@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 public class MessageUtil {
 
     // 유효성 검사 관련
-    public static final String NOT_EMPTY = "빈 값이 입력되었습니다.";
-    public static final String ONE_TO_FIVE = "null 값이 입력되었습니다.";
+    public static final String NOT_BLANK = "null 또는 공백이 입력되었습니다.";
+    public static final String ONE_TO_FIVE = "1~5 사이의 값을 입력해주세요.";
     public static final String LARGER_THAN_ZERO = "0보다 큰 값을 입력해주세요.";
     public static final String INVALID_EMAIL_FORMAT = "이메일 형식이 올바르지 않습니다.";
 

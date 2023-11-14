@@ -6,16 +6,16 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
 public class UpdateReviewDto {
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String reviewId; // 리뷰 고유 ID
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String content; // 내용
 
     @DecimalMin(value = "1", message = MessageUtil.ONE_TO_FIVE)

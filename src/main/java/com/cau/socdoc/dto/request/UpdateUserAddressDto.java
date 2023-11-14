@@ -4,18 +4,18 @@ import com.cau.socdoc.util.MessageUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
 public class UpdateUserAddressDto {
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String userId;
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address1;
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address2;
 }

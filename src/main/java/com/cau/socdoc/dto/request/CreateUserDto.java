@@ -5,24 +5,24 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
 public class CreateUserDto {
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String userId;
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String userName;
 
     @Email(message = MessageUtil.INVALID_EMAIL_FORMAT)
     private String userEmail;
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address1; // 서울시
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address2; // 동작구
 }

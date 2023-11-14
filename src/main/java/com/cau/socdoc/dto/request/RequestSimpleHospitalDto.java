@@ -5,16 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
 public class RequestSimpleHospitalDto {
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address1;
 
-    @NotEmpty(message = MessageUtil.NOT_EMPTY)
+    @NotBlank(message = MessageUtil.NOT_BLANK)
     private String address2;
 
     @DecimalMin(value = "1", message = MessageUtil.LARGER_THAN_ZERO)
