@@ -9,11 +9,11 @@ import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.repository.LikeRepository;
 import com.cau.socdoc.repository.ReviewRepository;
 import com.cau.socdoc.service.HospitalService;
+import com.cau.socdoc.util.MessageUtil;
 import com.cau.socdoc.util.api.ResponseCode;
 import com.cau.socdoc.util.exception.HospitalException;
 import com.cau.socdoc.util.exception.LikeException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +55,8 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        List<Hospital> hospitals = hospitalRepository.findHospitalByTypeAndAddress(type, address1, address2, pageNum);
+        String hospitalType = MessageUtil.codeToHospitalType(type);
+        List<Hospital> hospitals = hospitalRepository.findHospitalByTypeAndAddress(hospitalType, address1, address2, pageNum);
         return hospitals.stream().map(hospital -> {
             try {
                 return hospitalToSimpleHospitalDto(hospital);
