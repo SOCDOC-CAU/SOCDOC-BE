@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -31,13 +32,13 @@ public class HospitalController {
 
     // 특정 지역의 특정 분과 병원 조회
     @GetMapping("/list/{type}")
-    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@PathVariable String type, @RequestBody RequestSimpleHospitalDto dto) throws ExecutionException, InterruptedException {
+    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@PathVariable String type, @RequestBody @Valid RequestSimpleHospitalDto dto) throws ExecutionException, InterruptedException {
         return ApiResponse.success(hospitalService.findHospitalByTypeAndAddress(type, dto.getAddress1(), dto.getAddress2(), dto.getPageNum()), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
 
     // 특정 지역의 병원 조회
     @GetMapping("/list")
-    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@RequestBody RequestSimpleHospitalDto dto) throws ExecutionException, InterruptedException {
+    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@RequestBody @Valid RequestSimpleHospitalDto dto) throws ExecutionException, InterruptedException {
         return ApiResponse.success(hospitalService.findHospitalByAddress(dto.getAddress1(), dto.getAddress2(), dto.getPageNum()), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
 
@@ -49,14 +50,14 @@ public class HospitalController {
 
     // 유저가 병원에 좋아요 누르기
     @PostMapping("/like/user")
-    public ApiResponse<Void> likeHospital(@RequestBody RequestLikeDto dto) throws ExecutionException, InterruptedException {
+    public ApiResponse<Void> likeHospital(@RequestBody @Valid RequestLikeDto dto) throws ExecutionException, InterruptedException {
         hospitalService.saveLike(dto.getUserId(), dto.getHospitalId());
         return ApiResponse.success(null, ResponseCode.LIKE_CREATE_SUCCESS.getMessage());
     }
 
     // 유저가 병원에 좋아요 취소
     @DeleteMapping("/like/user")
-    public ApiResponse<Void> unlikeHospital(@RequestBody RequestLikeDto dto) throws ExecutionException, InterruptedException {
+    public ApiResponse<Void> unlikeHospital(@RequestBody @Valid RequestLikeDto dto) throws ExecutionException, InterruptedException {
         hospitalService.deleteLike(dto.getUserId(), dto.getHospitalId());
         return ApiResponse.success(null, ResponseCode.LIKE_DELETE_SUCCESS.getMessage());
     }
