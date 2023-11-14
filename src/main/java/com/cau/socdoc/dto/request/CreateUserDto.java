@@ -1,10 +1,10 @@
 package com.cau.socdoc.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
+@NoArgsConstructor
 public class CreateUserDto {
 
     private String userId;
