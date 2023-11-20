@@ -56,13 +56,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 생성
     @Transactional
-    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
-        try {
+    public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
             Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
             return reviewRepository.createReview(review, createReviewDto.getImage());
-        } catch (IOException e){
-            throw new ReviewException(ResponseCode.IMAGE_UPLOAD_ERROR);
-        }
     }
 
     // 리뷰 수정

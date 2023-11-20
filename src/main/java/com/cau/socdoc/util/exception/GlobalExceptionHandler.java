@@ -2,6 +2,7 @@ package com.cau.socdoc.util.exception;
 
 import com.cau.socdoc.util.api.ApiResponse;
 import com.cau.socdoc.util.api.ResponseCode;
+import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InterruptedException.class)
     public ApiResponse<Void> handleInterruptedException(InterruptedException e) {
         return ApiResponse.fail(ResponseCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FirebaseAuthException.class)
+    public ApiResponse<Void> handleFirebaseAuthException(FirebaseAuthException e) {
+        return ApiResponse.fail(ResponseCode.FIREBASE_AUTH_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class) // 요청의 유효성 검사 실패 시

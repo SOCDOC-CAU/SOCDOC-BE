@@ -36,25 +36,19 @@ public class UserController {
     // 로그인
     @Operation(summary = "[유저] 로그인", description = "Firebase Auth idToken을 통해 유저 정보를 조회합니다. 만약 유저 정보가 없다면 유저 정보를 생성하고 정보를 반환합니다.")
     @PostMapping("/login")
-    public ResponseUserInfoDto login(@RequestHeader String firebaseToken) {
+    public ResponseUserInfoDto login(@RequestHeader String firebaseToken) throws FirebaseAuthException, ExecutionException, InterruptedException{
         // uid를 통해 유저 정보를 가져온다.
-        try {
-            String uid = firebaseAuth.verifyIdToken(firebaseToken).getUid();
-            if (userService.getUserInfo(uid) == null) {
-                userService.createUser(CreateUserDto.builder()
-                        .userId(uid)
-                        .userName(firebaseAuth.getUser(uid).getDisplayName())
-                        .userEmail(firebaseAuth.getUser(uid).getEmail())
-                        .address1("서울특별시")
-                        .address2("동작구")
-                        .build());
-            }
-            return userService.getUserInfo(uid);
-        } catch (FirebaseAuthException e) {
-            throw new UserException(ResponseCode.USER_NOT_FOUND);
-        } catch (ExecutionException | InterruptedException e) {
-            throw new UserException(ResponseCode.INTERNAL_SERVER_ERROR);
+        String uid = firebaseAuth.verifyIdToken(firebaseToken).getUid();
+        if (userService.getUserInfo(uid) == null) { // 가입되어 있지 않다면 신규 회원 가입
+            userService.createUser(CreateUserDto.builder()
+                    .userId(uid)
+                    .userName(firebaseAuth.getUser(uid).getDisplayName())
+                    .userEmail(firebaseAuth.getUser(uid).getEmail())
+                    .address1("서울특별시") // 기본 주소는 서울특별시 동작구
+                    .address2("동작구")
+                    .build());
         }
+        return userService.getUserInfo(uid);
     }
 
     // 유저 주소 수정
