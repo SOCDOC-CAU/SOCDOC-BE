@@ -41,7 +41,7 @@ public class ReviewController {
     // 리뷰 생성
     @Operation(summary = "[리뷰] 리뷰 생성", description = "리뷰를 생성합니다.")
     @PostMapping("/create")
-    public ApiResponse<String> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException {
+    public ApiResponse<String> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
         return ApiResponse.success(reviewService.createReview(createReviewDto), ResponseCode.REVIEW_CREATE_SUCCESS.getMessage());
     }
 
