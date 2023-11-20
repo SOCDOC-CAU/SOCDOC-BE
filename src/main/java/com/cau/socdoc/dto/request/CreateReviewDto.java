@@ -3,10 +3,10 @@ package com.cau.socdoc.dto.request;
 import com.cau.socdoc.util.MessageUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.util.annotation.Nullable;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -22,9 +22,9 @@ public class CreateReviewDto {
     @NotBlank(message = MessageUtil.NOT_BLANK)
     private String content; // 내용
 
-    @DecimalMin(value = "1", message = MessageUtil.ONE_TO_FIVE)
-    @DecimalMax(value = "5", message = MessageUtil.ONE_TO_FIVE)
+    @Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
     private int rating; // 1 ~ 5
 
+    @Nullable
     private MultipartFile image; // 사진
 }
