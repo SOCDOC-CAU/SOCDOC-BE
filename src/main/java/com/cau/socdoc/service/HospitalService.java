@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 public interface HospitalService {
 
     // 병원 관련
-    ResponseDetailHospitalDto findHospitalDetailById(String hospitalId) throws ExecutionException, InterruptedException;
+    ResponseDetailHospitalDto findHospitalDetailById(String hospitalId, String userId) throws ExecutionException, InterruptedException;
     List<ResponseSimpleHospitalDto> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException;
     List<ResponseSimpleHospitalDto> findHospitalByAddress(String address1, String address2, int pageNum) throws ExecutionException, InterruptedException;
     List<ResponseSimpleHospitalDto> findHospitalByLike(String userId) throws ExecutionException, InterruptedException;

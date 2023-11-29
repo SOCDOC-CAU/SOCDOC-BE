@@ -7,8 +7,6 @@ import com.cau.socdoc.dto.response.ResponseReviewDto;
 import com.cau.socdoc.repository.ReviewRepository;
 import com.cau.socdoc.repository.UserRepository;
 import com.cau.socdoc.service.ReviewService;
-import com.cau.socdoc.util.api.ResponseCode;
-import com.cau.socdoc.util.exception.ReviewException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
@@ -40,7 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ResponseReviewDto> readReview(String userId, int type) throws ExecutionException, InterruptedException, IOException {
         Map<String, Review> reviews = reviewRepository.readReview(userId, type);
         List<ResponseReviewDto> responseReviewDtos = new ArrayList<>();
-        for (String reviewId: reviews.keySet()){
+        for (String reviewId : reviews.keySet()) {
             ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
                     .reviewId(reviewId)
                     .userName(userRepository.findNameById(reviews.get(reviewId).getUserId()))
@@ -57,8 +55,8 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 생성
     @Transactional
     public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
-            Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
-            return reviewRepository.createReview(review, createReviewDto.getImage());
+        Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), createReviewDto.getRating());
+        return reviewRepository.createReview(review, createReviewDto.getImage());
     }
 
     // 리뷰 수정
@@ -77,7 +75,7 @@ public class ReviewServiceImpl implements ReviewService {
         // /src/main/resources/static/images/ 경로에 저장된 리뷰 이미지를 읽어옴
         File file = new File(IMAGE_DIR + imageName + ".png");
         if (file.exists()) {
-            DiskFileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length() , file.getParentFile());
+            DiskFileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
             InputStream input = new FileInputStream(file);
             OutputStream os = fileItem.getOutputStream();
             IOUtils.copy(input, os);
