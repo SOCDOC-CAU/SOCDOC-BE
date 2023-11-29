@@ -39,14 +39,14 @@ public class ReviewController {
     }
 
     // 리뷰 생성
-    @Operation(summary = "[리뷰] 리뷰 생성", description = "리뷰를 생성합니다.")
+    @Operation(summary = "[리뷰] 리뷰 생성", description = "새 리뷰를 생성합니다.")
     @PostMapping("/create")
     public ApiResponse<String> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
         return ApiResponse.success(reviewService.createReview(createReviewDto), ResponseCode.REVIEW_CREATE_SUCCESS.getMessage());
     }
 
     // 리뷰 수정
-    @Operation(summary = "[리뷰] 리뷰 수정", description = "리뷰를 수정합니다.")
+    @Operation(summary = "[리뷰] 리뷰 수정", description = "특정 리뷰를 수정합니다.")
     @PutMapping("/update")
     public ApiResponse<Void> updateReview(@RequestBody @Valid UpdateReviewDto updateReviewDto) throws ExecutionException, InterruptedException {
         reviewService.updateReview(updateReviewDto);
@@ -54,8 +54,8 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @Operation(summary = "[리뷰] 리뷰 삭제", description = "리뷰를 삭제합니다.")
-    @DeleteMapping("/delete/reviewId/{reviewId}")
+    @Operation(summary = "[리뷰] 리뷰 삭제", description = "특정 리뷰를 삭제합니다.")
+    @DeleteMapping("/delete/{reviewId}")
     public ApiResponse<Void> deleteReview(@PathVariable String reviewId) throws ExecutionException, InterruptedException {
         reviewService.deleteReview(reviewId);
         return ApiResponse.success(null, ResponseCode.REVIEW_DELETE_SUCCESS.getMessage());
