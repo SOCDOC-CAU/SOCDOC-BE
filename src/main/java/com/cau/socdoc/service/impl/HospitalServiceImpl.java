@@ -38,7 +38,7 @@ public class HospitalServiceImpl implements HospitalService {
     // 병원 상세정보 조회
     @Override
     @Transactional(readOnly = true)
-    public ResponseDetailHospitalDto findHospitalDetailById(String hospitalId) throws ExecutionException, InterruptedException {
+    public ResponseDetailHospitalDto findHospitalDetailById(String hospitalId, String userId) throws ExecutionException, InterruptedException {
         Hospital hospital = hospitalRepository.findHospitalDetail(hospitalId);
         return ResponseDetailHospitalDto.builder()
                 .hpid(hospital.getHpid())
@@ -48,6 +48,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .description(hospital.getDutyMapimg())
                 .likeCount(likeRepository.findLikeCountByHospitalId(hospitalId))
                 .time(findTime(hospital))
+                .userLiked(likeRepository.existsLikeByUserIdAndHospitalId(userId, hospitalId))
                 .build();
     }
 

@@ -15,5 +15,6 @@ public class ResponseDetailHospitalDto {
     private String address;
     private String description;
     private int likeCount;
+    private boolean userLiked;
     private List<String> time;
 }
