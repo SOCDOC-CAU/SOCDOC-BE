@@ -26,21 +26,21 @@ public class ReviewController {
 
     // 유저의 리뷰 조회
     @Operation(summary = "[리뷰] 유저 리뷰 조회", description = "특정 유저가 작성한 리뷰를 조회합니다.")
-    @GetMapping("/read/user/{userId}")
-    public ApiResponse<List<ResponseReviewDto>> readReviewByUserId(@PathVariable String userId) throws ExecutionException, InterruptedException, IOException {
+    @GetMapping("/user")
+    public ApiResponse<List<ResponseReviewDto>> readReviewByUserId(@RequestParam String userId) throws ExecutionException, InterruptedException, IOException {
         return ApiResponse.success(reviewService.readReview(userId, 0), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
     }
 
     // 병원의 리뷰 조회
     @Operation(summary = "[리뷰] 병원 리뷰 조회", description = "특정 병원에 작성된 리뷰를 조회합니다.")
-    @GetMapping("/read/hospital/{hospitalId}")
-    public ApiResponse<List<ResponseReviewDto>> readReviewByHospitalId(@PathVariable String hospitalId) throws ExecutionException, InterruptedException, IOException {
+    @GetMapping("/hospital")
+    public ApiResponse<List<ResponseReviewDto>> readReviewByHospitalId(@RequestParam String hospitalId) throws ExecutionException, InterruptedException, IOException {
         return ApiResponse.success(reviewService.readReview(hospitalId, 1), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
     }
 
     // 리뷰 생성
     @Operation(summary = "[리뷰] 리뷰 생성", description = "새 리뷰를 생성합니다.")
-    @PostMapping("/create")
+    @PostMapping
     public ApiResponse<String> createReview(@RequestBody @Valid CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
         return ApiResponse.success(reviewService.createReview(createReviewDto), ResponseCode.REVIEW_CREATE_SUCCESS.getMessage());
     }
@@ -55,8 +55,8 @@ public class ReviewController {
 
     // 리뷰 삭제
     @Operation(summary = "[리뷰] 리뷰 삭제", description = "특정 리뷰를 삭제합니다.")
-    @DeleteMapping("/delete/{reviewId}")
-    public ApiResponse<Void> deleteReview(@PathVariable String reviewId) throws ExecutionException, InterruptedException {
+    @DeleteMapping
+    public ApiResponse<Void> deleteReview(@RequestParam String reviewId) throws ExecutionException, InterruptedException {
         reviewService.deleteReview(reviewId);
         return ApiResponse.success(null, ResponseCode.REVIEW_DELETE_SUCCESS.getMessage());
     }
