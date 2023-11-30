@@ -93,4 +93,7 @@ public class MessageUtil {
                 throw new HospitalException(ResponseCode.BAD_REQUEST);
         }
     }
+
+    // 정렬 기준
+    public static final int SORT_BY_NAME = 1;
 }
