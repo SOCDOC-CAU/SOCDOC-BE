@@ -28,8 +28,8 @@ public class UserController {
 
     // 유저 정보 조회
     @Operation(summary = "[유저] 유저 정보 조회", description = "Firebase uid인 userId를 통해 유저 정보를 조회합니다.")
-    @GetMapping("/info/user/{userId}")
-    public ApiResponse<ResponseUserInfoDto> getUserInfo(@PathVariable String userId) throws ExecutionException, InterruptedException {
+    @GetMapping
+    public ApiResponse<ResponseUserInfoDto> getUserInfo(@RequestParam String userId) throws ExecutionException, InterruptedException {
         return ApiResponse.success(userService.getUserInfo(userId), ResponseCode.USER_READ_SUCCESS.getMessage());
     }
 
@@ -69,8 +69,8 @@ public class UserController {
 
     // 유저 탈퇴
     @Operation(summary = "[유저] 유저 탈퇴", description = "유저를 탈퇴시킵니다.")
-    @DeleteMapping("/delete/user/{userId}")
-    public ApiResponse<Void> deleteUser(@PathVariable String userId) throws FirebaseAuthException {
+    @DeleteMapping
+    public ApiResponse<Void> deleteUser(@RequestParam String userId) throws FirebaseAuthException {
         userService.deleteUser(userId);
         return ApiResponse.success(null, ResponseCode.USER_DELETE_SUCCESS.getMessage());
     }
