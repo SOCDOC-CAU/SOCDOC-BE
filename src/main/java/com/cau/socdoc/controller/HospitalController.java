@@ -32,17 +32,17 @@ public class HospitalController {
     }
 
     // 특정 지역의 특정 분과 병원 조회
-    @Operation(summary = "특정 지역의 특정 분과 병원 조회", description = "병원코드 type과 주소, 페이지번호를 기반으로 특정 지역의 특정 분과 병원 목록을 조회합니다. (예: <서울특별시> <관악구>의 치과)")
-    @GetMapping("/list/{type}")
-    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@PathVariable String type, @RequestParam String address1, @RequestParam String address2, @RequestParam int pageNum) throws ExecutionException, InterruptedException {
-        return ApiResponse.success(hospitalService.findHospitalByTypeAndAddress(type, address1, address2, pageNum), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
+    @Operation(summary = "특정 지역의 특정 분과 병원 조회", description = "병원코드 type과 주소, 페이지번호를 기반으로 특정 지역의 특정 분과 병원 목록을 조회합니다. (예: <서울특별시> <관악구>의 치과), sortType이 0이면 별점순, 1이면 이름순으로 정렬됩니다.")
+    @GetMapping("/list/{code}")
+    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@PathVariable String code, @RequestParam String address1, @RequestParam String address2, @RequestParam int pageNum, @RequestParam int sortType) throws ExecutionException, InterruptedException {
+        return ApiResponse.success(hospitalService.findHospitalByTypeAndAddress(code, address1, address2, pageNum, sortType), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
 
     // 특정 지역의 병원 조회
-    @Operation(summary = "특정 지역의 병원 조회", description = "주소, 페이지번호를 기반으로 특정 지역의 병원 목록을 조회합니다. (예: <서울특별시> <동작구>의 병원)")
+    @Operation(summary = "특정 지역의 병원 조회", description = "주소, 페이지번호를 기반으로 특정 지역의 병원 목록을 조회합니다. (예: <서울특별시> <동작구>의 병원), sortType이 0이면 별점순, 1이면 이름순으로 정렬됩니다.")
     @GetMapping("/list")
-    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@RequestParam String address1, @RequestParam String address2, @RequestParam int pageNum) throws ExecutionException, InterruptedException {
-        return ApiResponse.success(hospitalService.findHospitalByAddress(address1, address2, pageNum), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
+    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByTypeAndAddress(@RequestParam String address1, @RequestParam String address2, @RequestParam int pageNum, @RequestParam int sortType) throws ExecutionException, InterruptedException {
+        return ApiResponse.success(hospitalService.findHospitalByAddress(address1, address2, pageNum, sortType), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
 
     // 유저가 좋아요 누른 병원 조회
