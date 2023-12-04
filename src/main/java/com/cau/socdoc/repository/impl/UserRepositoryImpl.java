@@ -34,6 +34,12 @@ public class UserRepositoryImpl implements UserRepository {
         return db.collection(MessageUtil.COLLECTION_USER).document(userId).get().get().getString("userName");
     }
 
+    // id로 회원가입 여부 조회
+    public boolean existsUserById(String userId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        return db.collection(MessageUtil.COLLECTION_USER).document(userId).get().get().exists();
+    }
+
     // id로 유저 조회
     @Override
     public User findUserById(String userId) throws ExecutionException, InterruptedException {
