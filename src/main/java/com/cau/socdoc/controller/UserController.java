@@ -39,7 +39,7 @@ public class UserController {
     public ApiResponse<ResponseUserInfoDto> login(@RequestHeader String authToken) throws FirebaseAuthException, ExecutionException, InterruptedException{
         // uid를 통해 유저 정보를 가져온다.
         String uid = firebaseAuth.verifyIdToken(authToken).getUid();
-        if (userService.getUserInfo(uid) == null) { // 가입되어 있지 않다면 신규 회원 가입
+        if (!userService.existsUserById(uid)) { // 가입되어 있지 않다면 신규 회원 가입
             userService.createUser(CreateUserDto.builder()
                     .userId(uid)
                     .userName(firebaseAuth.getUser(uid).getDisplayName())
