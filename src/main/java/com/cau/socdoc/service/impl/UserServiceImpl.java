@@ -29,6 +29,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
+    public boolean existsUserById(String userId) throws ExecutionException, InterruptedException {
+        return userRepository.existsUserById(userId);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseUserInfoDto getUserInfo(String userId) throws ExecutionException, InterruptedException {
         User user = userRepository.findUserById(userId);
         log.info("유저 정보 조회 완료: " + userId);

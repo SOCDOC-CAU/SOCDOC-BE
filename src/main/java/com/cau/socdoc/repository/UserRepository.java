@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 public interface UserRepository {
 
     void createUser(String userId, String userName, String userEmail, String address1, String address2);
+    boolean existsUserById(String userId) throws ExecutionException, InterruptedException;
     String findNameById(String userId) throws ExecutionException, InterruptedException;
     User findUserById(String userId) throws ExecutionException, InterruptedException;
     void updateUserAddress(String userId, String address1, String address2) throws ExecutionException, InterruptedException;

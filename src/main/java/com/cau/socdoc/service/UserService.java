@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 public interface UserService {
 
     void createUser(CreateUserDto createUserDto);
+    boolean existsUserById(String userId) throws ExecutionException, InterruptedException;
     ResponseUserInfoDto getUserInfo(String userId) throws ExecutionException, InterruptedException;
     void updateUserAddress(UpdateUserAddressDto updateUserAddressDto) throws ExecutionException, InterruptedException;
     void updateUserName(UpdateUserNameDto updateUserNameDto) throws ExecutionException, InterruptedException;
