@@ -3,6 +3,7 @@ package com.cau.socdoc.util.exception;
 import com.cau.socdoc.util.api.ApiResponse;
 import com.cau.socdoc.util.api.ResponseCode;
 import com.google.firebase.auth.FirebaseAuthException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,41 +14,49 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserException.class)
     public ApiResponse<Void> handleUserException(UserException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(e.getResponseCode());
     }
 
     @ExceptionHandler(ReviewException.class)
     public ApiResponse<Void> handleReviewException(ReviewException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(e.getResponseCode());
     }
 
     @ExceptionHandler(HospitalException.class)
     public ApiResponse<Void> handleHospitalException(HospitalException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(e.getResponseCode());
     }
 
     @ExceptionHandler(LikeException.class)
     public ApiResponse<Void> handleLikeException(LikeException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(e.getResponseCode());
     }
 
     @ExceptionHandler(ExecutionException.class)
     public ApiResponse<Void> handleExecutionException(ExecutionException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(ResponseCode.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InterruptedException.class)
     public ApiResponse<Void> handleInterruptedException(InterruptedException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(ResponseCode.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(FirebaseAuthException.class)
     public ApiResponse<Void> handleFirebaseAuthException(FirebaseAuthException e) {
+        log.error(e.getMessage(), e);
         return ApiResponse.fail(ResponseCode.FIREBASE_AUTH_ERROR);
     }
 
