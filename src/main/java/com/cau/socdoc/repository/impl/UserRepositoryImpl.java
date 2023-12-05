@@ -31,7 +31,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public String findNameById(String userId) throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
-        return db.collection(MessageUtil.COLLECTION_USER).document(userId).get().get().getString("userName");
+        DocumentSnapshot d = db.collection(MessageUtil.COLLECTION_USER).document(userId).get().get();
+        if (d.getString(MessageUtil.USER_NAME) == null) {
+            if (d.getString(MessageUtil.USER_EMAIL) == null) {
+                return d.getString(MessageUtil.USER_ID);
+            }
+            return d.getString(MessageUtil.USER_EMAIL);
+        } else {
+            return d.getString(MessageUtil.USER_NAME);
+        }
     }
 
     // id로 회원가입 여부 조회
@@ -47,7 +55,7 @@ public class UserRepositoryImpl implements UserRepository {
         DocumentReference docRef = db.collection(MessageUtil.COLLECTION_USER).document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = future.get();
-        if(!document.exists()){
+        if (!document.exists()) {
             throw new UserException(ResponseCode.USER_NOT_FOUND);
         }
         return document.toObject(User.class);
@@ -60,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
         DocumentReference docRef = db.collection(MessageUtil.COLLECTION_USER).document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = future.get();
-        if(!document.exists()){
+        if (!document.exists()) {
             throw new UserException(ResponseCode.USER_NOT_FOUND);
         }
         docRef.update(MessageUtil.ADDRESS1, address1);
@@ -74,7 +82,7 @@ public class UserRepositoryImpl implements UserRepository {
         DocumentReference docRef = db.collection(MessageUtil.COLLECTION_USER).document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = future.get();
-        if(!document.exists()){
+        if (!document.exists()) {
             throw new UserException(ResponseCode.USER_NOT_FOUND);
         }
         docRef.update(MessageUtil.USER_NAME, userName);

@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         log.info("유저 정보 조회 완료: " + userId);
         return ResponseUserInfoDto.builder()
                 .userId(user.getUserId())
-                .userName(user.getUserName())
+                .userName(user.getUserName() == null ? (user.getUserEmail()  == null ? user.getUserId() : user.getUserEmail()) : user.getUserName())
                 .userEmail(user.getUserEmail())
                 .address1(user.getAddress1())
                 .address2(user.getAddress2())
