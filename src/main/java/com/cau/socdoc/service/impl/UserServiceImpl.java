@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         return ResponseUserInfoDto.builder()
                 .userId(user.getUserId())
                 .userName(user.getUserName() == null ? (user.getUserEmail()  == null ? user.getUserId() : user.getUserEmail()) : user.getUserName())
-                .userEmail(user.getUserEmail())
+                .userEmail(user.getUserEmail() == null ? user.getUserId() : user.getUserEmail())
                 .address1(user.getAddress1())
                 .address2(user.getAddress2())
                 .build();
