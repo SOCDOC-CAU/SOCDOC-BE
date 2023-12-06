@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static com.cau.socdoc.util.MessageUtil.days;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -168,7 +170,7 @@ public class HospitalServiceImpl implements HospitalService {
             String end = split[1];
             String newStart = start.substring(0, 2) + ":" + start.substring(2, 4);
             String newEnd = end.substring(0, 2) + ":" + end.substring(2, 4);
-            time.set(i, newStart + " - " + newEnd);
+            time.set(i, days[i] + " " + newStart + " - " + newEnd);
         }
         log.info("병원 영업시간 조회 완료: " + hospital.getHpid());
         return time;

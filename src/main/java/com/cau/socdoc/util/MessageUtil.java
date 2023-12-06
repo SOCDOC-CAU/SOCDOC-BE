@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MessageUtil {
 
+    public static final String[] days = {"월", "화", "수", "목", "금", "토"};;
+
     // 유효성 검사 관련
     public static final String NOT_BLANK = "null 또는 공백이 입력되었습니다.";
     public static final String ONE_TO_FIVE = "1~5 사이의 값을 입력해주세요.";
