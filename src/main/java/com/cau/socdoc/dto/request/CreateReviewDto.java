@@ -3,6 +3,7 @@ package com.cau.socdoc.dto.request;
 import com.cau.socdoc.util.MessageUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class CreateReviewDto implements Serializable {
 
@@ -26,5 +28,5 @@ public class CreateReviewDto implements Serializable {
     //@Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
     private String rating; // 별점
 
-    private List<MultipartFile> files; // 사진
+    List<MultipartFile> files; // 사진
 }
