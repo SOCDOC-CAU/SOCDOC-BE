@@ -45,9 +45,16 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Override
     public String createReview(Review review, MultipartFile image) throws ExecutionException, InterruptedException, IOException {
         Firestore db = FirestoreClient.getFirestore();
-        ApiFuture<DocumentReference> docRef = db.collection(MessageUtil.COLLECTION_REVIEW).add(review);
+        // 이미 유저가 이 병원에 이미 리뷰를 남겼는지 확인
+        CollectionReference reviewCollection = db.collection(MessageUtil.COLLECTION_REVIEW);
+        Query query = reviewCollection.whereEqualTo(MessageUtil.USER_ID, review.getUserId()).whereEqualTo(MessageUtil.HOSPITAL_ID, review.getHospitalId());
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        if(!querySnapshot.isEmpty()){
+            throw new ReviewException(ResponseCode.REVIEW_ALREADY_EXIST);
+        }
 
         // 수신한 이미지 디렉토리에 저장
+        ApiFuture<DocumentReference> docRef = db.collection(MessageUtil.COLLECTION_REVIEW).add(review);
         if(image != null){
             image.transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
         }
