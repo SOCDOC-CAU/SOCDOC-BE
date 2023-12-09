@@ -26,6 +26,7 @@ public enum ResponseCode {
 
     // 409 Conflict
     LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, false, "이미 좋아요를 누른 병원입니다."),
+    REVIEW_ALREADY_EXIST(HttpStatus.CONFLICT, false, "이미 리뷰를 남긴 병원입니다."),
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
