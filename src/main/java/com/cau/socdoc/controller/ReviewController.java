@@ -9,6 +9,7 @@ import com.cau.socdoc.util.api.ResponseCode;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @Api(tags = "review")
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
@@ -35,6 +37,7 @@ public class ReviewController {
     @Operation(summary = "[리뷰] 병원 리뷰 조회", description = "특정 병원에 작성된 리뷰를 조회합니다.")
     @GetMapping("/hospital")
     public ApiResponse<List<ResponseReviewDto>> readReviewByHospitalId(@RequestParam String hospitalId) throws ExecutionException, InterruptedException, IOException {
+        log.info("요청 받아 병원 리뷰 조회 시작, 병원 ID: " + hospitalId);
         return ApiResponse.success(reviewService.readReview(hospitalId, 1), ResponseCode.REVIEW_READ_SUCCESS.getMessage());
     }
 
@@ -42,6 +45,13 @@ public class ReviewController {
     @Operation(summary = "[리뷰] 리뷰 생성", description = "새 리뷰를 생성합니다.")
     @PostMapping
     public ApiResponse<String> createReview(@ModelAttribute CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
+        log.info("요청 받아 병원 리뷰 생성 시작");
+        log.info("userId: " + createReviewDto.getUserId());
+        log.info("hospitalId: " + createReviewDto.getHospitalId());
+        log.info("content: " + createReviewDto.getContent());
+        log.info("rating " + createReviewDto.getRating());
+        log.info("files: " + createReviewDto.getFiles().toString());
+        log.info("Dto 내용물 확인 완료, Service로 진입");
         return ApiResponse.success(reviewService.createReview(createReviewDto), ResponseCode.REVIEW_CREATE_SUCCESS.getMessage());
     }
 
