@@ -9,16 +9,14 @@ import com.cau.socdoc.repository.UserRepository;
 import com.cau.socdoc.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +24,12 @@ import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
     @Value("${IMAGE_DIR}")
-    private static String IMAGE_DIR;
+    private String IMAGE_DIR;
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
@@ -48,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
                     .createdAt(reviews.get(reviewId).getCreatedAt().toString())
                     .rating(reviews.get(reviewId).getRating())
                     .content(reviews.get(reviewId).getContent())
-                    .image(readImage(reviewId))
+                    .files(readImage(reviewId))
                     .build();
             responseReviewDtos.add(responseReviewDto);
         }
@@ -78,20 +77,14 @@ public class ReviewServiceImpl implements ReviewService {
         log.info("리뷰 삭제 완료: " + reviewId);
     }
 
-    private MultipartFile readImage(String imageName) throws IOException { // 로컬에 존재하는 리뷰 이미지 읽어오기
-        // /src/main/resources/static/images/ 경로에 저장된 리뷰 이미지를 읽어옴
-        log.info("이미지 읽어오기 시작: " + imageName);
-        File file = new File(IMAGE_DIR + imageName + ".png");
-        if (file.exists()) {
-            log.info("이미지 있음: " + imageName);
-            DiskFileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
-            InputStream input = new FileInputStream(file);
-            OutputStream os = fileItem.getOutputStream();
-            IOUtils.copy(input, os);
-            return new CommonsMultipartFile(fileItem);
-        } else {
+    private byte[] readImage(String imageName) throws IOException {
+        String dir = IMAGE_DIR + imageName + ".jpg";
+        log.info(dir);
+        File file = new File(dir);
+        if (!file.exists()) {
             log.info("이미지 없음: " + imageName);
             return null;
         }
+        return Files.readAllBytes(Paths.get(dir));
     }
 }
