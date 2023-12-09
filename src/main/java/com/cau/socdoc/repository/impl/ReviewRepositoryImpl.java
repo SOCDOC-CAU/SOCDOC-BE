@@ -9,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@Component
 @Repository
 public class ReviewRepositoryImpl implements ReviewRepository {
 
-    @Value("@{IMAGE_DIL}")
+    @Value("${IMAGE_DIR}")
     private String IMAGE_DIR;
 
     @Override
@@ -56,7 +58,10 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         // 수신한 이미지 디렉토리에 저장
         ApiFuture<DocumentReference> docRef = db.collection(MessageUtil.COLLECTION_REVIEW).add(review);
         if(image != null){
-            image.transferTo(new File(IMAGE_DIR+ docRef.get().getId() + ".png"));
+            // 이미지 로컬 저장
+            String fileName = docRef.get().getId() + ".jpg";
+            File file = new File(IMAGE_DIR + fileName);
+            image.transferTo(file);
         }
         return docRef.get().getId();
     }
