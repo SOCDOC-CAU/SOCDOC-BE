@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -25,5 +26,5 @@ public class CreateReviewDto implements Serializable {
     //@Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
     private String rating; // 별점
 
-    private MultipartFile files; // 사진
+    private List<MultipartFile> files; // 사진
 }

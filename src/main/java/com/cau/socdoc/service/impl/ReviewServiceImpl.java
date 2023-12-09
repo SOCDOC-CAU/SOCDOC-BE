@@ -58,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public String createReview(CreateReviewDto createReviewDto) throws ExecutionException, InterruptedException, IOException {
         Review review = Review.of(createReviewDto.getUserId(), createReviewDto.getHospitalId(), createReviewDto.getContent(), Integer.parseInt(createReviewDto.getRating()));
-        String reviewId = reviewRepository.createReview(review, createReviewDto.getFiles());
+        String reviewId = reviewRepository.createReview(review, createReviewDto.getFiles().get(0));
         log.info("리뷰 생성 완료: " + reviewId);
         return reviewId;
     }
