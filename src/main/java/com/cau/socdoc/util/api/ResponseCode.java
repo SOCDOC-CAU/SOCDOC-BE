@@ -30,7 +30,7 @@ public enum ResponseCode {
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "서버에 오류가 발생하였습니다."),
-    IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "이미지 업로드에 실패하였습니다."),
+    IMAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "이미지 저장 혹은 조회에 실패하였습니다."),
     FIREBASE_AUTH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, "Firebase 인증에 실패하였습니다."),
 
     // 200 OK

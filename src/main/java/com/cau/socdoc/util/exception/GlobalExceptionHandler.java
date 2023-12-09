@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -58,6 +59,12 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleFirebaseAuthException(FirebaseAuthException e) {
         log.error(e.getMessage(), e);
         return ApiResponse.fail(ResponseCode.FIREBASE_AUTH_ERROR);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ApiResponse<Void> handleIOException(IOException e) {
+        log.error(e.getMessage(), e);
+        return ApiResponse.fail(ResponseCode.IMAGE_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class) // 요청의 유효성 검사 실패 시
