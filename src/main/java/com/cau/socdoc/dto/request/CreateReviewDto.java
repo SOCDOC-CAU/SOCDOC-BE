@@ -22,8 +22,8 @@ public class CreateReviewDto implements Serializable {
     @NotBlank(message = MessageUtil.NOT_BLANK)
     private String content; // 내용
 
-    @Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
-    private int rating; // 1 ~ 5
+    //@Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
+    private String rating; // 별점
 
     private MultipartFile image; // 사진
 }
