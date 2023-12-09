@@ -25,5 +25,5 @@ public class CreateReviewDto implements Serializable {
     //@Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
     private String rating; // 별점
 
-    private MultipartFile image; // 사진
+    private MultipartFile files; // 사진
 }
