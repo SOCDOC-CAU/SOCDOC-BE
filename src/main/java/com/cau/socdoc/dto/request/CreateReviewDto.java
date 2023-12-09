@@ -1,17 +1,17 @@
 package com.cau.socdoc.dto.request;
 
 import com.cau.socdoc.util.MessageUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Getter
-@NoArgsConstructor
-public class CreateReviewDto {
+@AllArgsConstructor
+public class CreateReviewDto implements Serializable {
 
     @NotBlank(message = MessageUtil.NOT_BLANK)
     private String userId; // 작성한 유저 ID
@@ -25,6 +25,5 @@ public class CreateReviewDto {
     @Range(min = 1, max = 5, message = MessageUtil.ONE_TO_FIVE)
     private int rating; // 1 ~ 5
 
-    @Nullable
     private MultipartFile image; // 사진
 }
