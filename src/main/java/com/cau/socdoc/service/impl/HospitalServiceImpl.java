@@ -183,6 +183,8 @@ public class HospitalServiceImpl implements HospitalService {
                 .name(hospital.getDutyName())
                 .address(hospital.getDutyAddr())
                 .rating(reviewRepository.getReviewAverage(hospital.getHpid()))
+                .latitude(hospital.getWgs84Lat())
+                .longitude(hospital.getWgs84Lon())
                 .build();
     }
 }

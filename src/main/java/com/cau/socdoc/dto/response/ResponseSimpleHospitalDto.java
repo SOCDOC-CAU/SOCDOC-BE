@@ -11,4 +11,6 @@ public class ResponseSimpleHospitalDto {
     private String name;
     private String address;
     private double rating;
+    private double latitude;
+    private double longitude;
 }
