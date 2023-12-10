@@ -67,6 +67,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
                 e.printStackTrace();
             }
         }
+        reCalculateHospitalRating(review.getHospitalId());
         return docRef.get().getId();
     }
 
@@ -81,12 +82,52 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         }
         docRef.update(MessageUtil.CONTENT, contents);
         docRef.update(MessageUtil.RATING, rating);
+        reCalculateHospitalRating(document.getString(MessageUtil.HOSPITAL_ID));
     }
 
     @Override
-    public void deleteReview(String reviewId) {
+    public void deleteReview(String reviewId) throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
+
+        // 특정 리뷰 id를 가진 리뷰를 찾아 병원 id를 가져온다.
+        DocumentReference docRef = db.collection(MessageUtil.COLLECTION_REVIEW).document(reviewId);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (!document.exists()) {
+            throw new ReviewException(ResponseCode.REVIEW_NOT_FOUND);
+        }
+
+        // 리뷰를 삭제한다.
         db.collection(MessageUtil.COLLECTION_REVIEW).document(reviewId).delete();
+        reCalculateHospitalRating(document.getString(MessageUtil.HOSPITAL_ID));
+    }
+
+    // 병원의 평점을 다시 계산하여 저장한다.
+    private void reCalculateHospitalRating(String hospitalId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        // 리뷰 컬렉션을 조회하여 병원 id가 일치하는 리뷰를 가져온다.
+        CollectionReference reviewCollection = db.collection(MessageUtil.COLLECTION_REVIEW);
+        Query query = reviewCollection.whereEqualTo(MessageUtil.HOSPITAL_ID, hospitalId);
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        if(querySnapshot.isEmpty()){
+            throw new ReviewException(ResponseCode.REVIEW_NOT_FOUND);
+        }
+
+        double sum = 0;
+        for(QueryDocumentSnapshot document : querySnapshot){
+            sum += document.toObject(Review.class).getRating();
+        }
+        double answer = sum / querySnapshot.size();
+        answer = Math.round(answer * 10) / 10.0; // 소수점 첫째자리까지 반올림
+
+        // 이제 병원의 rating을 업데이트
+        DocumentReference docRef = db.collection(MessageUtil.COLLECTION_HOSPITAL).document(hospitalId);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (!document.exists()) {
+            throw new ReviewException(ResponseCode.HOSPITAL_NOT_FOUND);
+        }
+        docRef.update(MessageUtil.RATING, answer);
     }
 
     @Override

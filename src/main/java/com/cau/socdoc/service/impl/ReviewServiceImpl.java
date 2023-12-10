@@ -90,7 +90,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public void deleteReview(String reviewId) {
+    public void deleteReview(String reviewId) throws ExecutionException, InterruptedException {
         reviewRepository.deleteReview(reviewId);
         log.info("리뷰 삭제 완료: " + reviewId);
     }
