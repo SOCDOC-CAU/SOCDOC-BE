@@ -98,11 +98,11 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         if(querySnapshot.isEmpty()){
             return 0.0;
         }
-        int sum = 0;
+        double sum = 0;
         for(QueryDocumentSnapshot document : querySnapshot){
             sum += document.toObject(Review.class).getRating();
         }
-        double answer = (double)sum / querySnapshot.size();
+        double answer = sum / querySnapshot.size();
         return Math.round(answer * 10) / 10.0;
     }
 }
