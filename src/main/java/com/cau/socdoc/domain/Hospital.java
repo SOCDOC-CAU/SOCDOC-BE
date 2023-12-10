@@ -47,4 +47,5 @@ public class Hospital {
     private double wgs84Lon; // 병원경도
     private double wgs84Lat; // 병원위도
     private List<String> dgidIdName; // 진료과목
+    private double rating; // 별점
 }
