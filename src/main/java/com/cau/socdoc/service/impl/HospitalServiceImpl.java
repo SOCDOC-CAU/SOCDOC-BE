@@ -54,6 +54,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .likeCount(likeRepository.findLikeCountByHospitalId(hospitalId))
                 .time(findTime(hospital))
                 .userLiked(likeRepository.existsLikeByUserIdAndHospitalId(userId, hospitalId))
+                .rating(reviewRepository.getReviewAverage(hospitalId))
                 .build();
     }
 

@@ -17,4 +17,5 @@ public class ResponseDetailHospitalDto {
     private int likeCount;
     private boolean userLiked;
     private List<String> time;
+    private double rating;
 }
