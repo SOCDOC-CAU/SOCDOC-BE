@@ -12,13 +12,13 @@ public class Like {
 
     private String userId;
     private String hospitalId;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public static Like of(String userId, String hospitalId) {
         Like like = new Like();
         like.userId = userId;
         like.hospitalId = hospitalId;
-        like.createdAt = LocalDateTime.now();
+        like.createdAt = LocalDateTime.now().toString();
         return like;
     }
 }
