@@ -63,19 +63,12 @@ public class HospitalServiceImpl implements HospitalService {
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum, int sortType) throws ExecutionException, InterruptedException {
         String hospitalType = MessageUtil.codeToHospitalType(type);
-        List<Hospital> hospitals = hospitalRepository.findHospitalByTypeAndAddress(hospitalType, address1, address2, pageNum);
+        List<Hospital> hospitals = hospitalRepository.findHospitalByTypeAndAddress(hospitalType, address1, address2, pageNum, sortType);
         log.info("특정 지역 특정 분과 병원 조회 완료: " + hospitalType + "- " + address1 + " " + address2);
         List<ResponseSimpleHospitalDto> dtos = new ArrayList<>();
         for (Hospital hospital : hospitals) {
             dtos.add(hospitalToSimpleHospitalDto(hospital));
         }
-        dtos.sort((o1, o2) -> {
-            if (sortType == MessageUtil.SORT_BY_NAME) {
-                return o1.getName().compareTo(o2.getName()); // 이름 오름차순
-            } else {
-                return Double.compare(o2.getRating(), o1.getRating()); // 별점 내림차순
-            }
-        });
         return dtos;
     }
 
@@ -83,19 +76,12 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSimpleHospitalDto> findHospitalByAddress(String address1, String address2, int pageNum, int sortType) throws ExecutionException, InterruptedException {
-        List<Hospital> hospitals = hospitalRepository.findHospitalByAddress(address1, address2, pageNum);
+        List<Hospital> hospitals = hospitalRepository.findHospitalByAddress(address1, address2, pageNum, sortType);
         log.info("특정 지역 병원 조회 완료: " + address1 + " " + address2);
         List<ResponseSimpleHospitalDto> dtos = new ArrayList<>();
         for (Hospital hospital : hospitals) {
             dtos.add(hospitalToSimpleHospitalDto(hospital));
         }
-        dtos.sort((o1, o2) -> {
-            if (sortType == MessageUtil.SORT_BY_NAME) {
-                return o1.getName().compareTo(o2.getName()); // 이름 오름차순
-            } else {
-                return Double.compare(o2.getRating(), o1.getRating()); // 별점 내림차순
-            }
-        });
         return dtos;
     }
 

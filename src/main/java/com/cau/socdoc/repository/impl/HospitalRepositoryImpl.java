@@ -4,6 +4,8 @@ import com.cau.socdoc.domain.Hospital;
 import com.cau.socdoc.domain.Like;
 import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.util.MessageUtil;
+import com.cau.socdoc.util.api.ResponseCode;
+import com.cau.socdoc.util.exception.HospitalException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -11,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -27,73 +28,63 @@ public class HospitalRepositoryImpl implements HospitalRepository {
     }
 
     // 특정 지역의 특정 진료과목의 병원을 조회 (10개 단위)
-    public List<Hospital> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        // 이전 페이지의 마지막 dutyName 값을 가져오기
-        String lastDutyName = getLastDutyNameOnPreviousPage(type, address1, address2, pageNum);
-        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
-                .whereArrayContains(MessageUtil.TYPE_HOSPITAL, type)
-                .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
-                .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
-                .orderBy(MessageUtil.DUTY_NAME)
-                .startAfter(lastDutyName) // 이전 페이지의 마지막 dutyName 이후부터 시작
-                .limit(10);
-        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
-        return querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
-    }
-
-    // 이전 페이지의 마지막 dutyName 값을 가져오기 for 특정 지역의 특정 진료과목의 병원 조회
-    private String getLastDutyNameOnPreviousPage(String type, String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        if (pageNum > 1) {
-            // 이전 페이지의 마지막 hospitalId를 가져오기
-            int previousPageStartIdx = (pageNum - 1) * 10;
-            Query previousPageQuery = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+    public List<Hospital> findHospitalByTypeAndAddress(String type, String address1, String address2, int pageNum, int sortType) throws ExecutionException, InterruptedException {
+        Query query = null;
+        if(sortType == 0) { // 별점 내림차순
+            query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+                    .whereArrayContains(MessageUtil.TYPE_HOSPITAL, type)
+                    .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
+                    .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
+                    .orderBy(MessageUtil.RATING, Query.Direction.DESCENDING)
+                    .limit(pageNum * 10);
+        } else if(sortType == 1) { // 이름 오름차순
+            query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
                     .whereArrayContains(MessageUtil.TYPE_HOSPITAL, type)
                     .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
                     .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
                     .orderBy(MessageUtil.DUTY_NAME)
-                    .startAt(previousPageStartIdx)
                     .limit(pageNum * 10);
-
-            List<QueryDocumentSnapshot> previousPageSnapshot = previousPageQuery.get().get().getDocuments();
-            if (!previousPageSnapshot.isEmpty()) {
-                return previousPageSnapshot.get(previousPageSnapshot.size() - 1).getString(MessageUtil.DUTY_NAME);
-            }
+        } else {
+            throw new HospitalException(ResponseCode.BAD_REQUEST);
         }
-        return null; // 첫 페이지인 경우 null 반환
-    }
-
-    // 특정 지역의 병원을 조회 (10개 단위)
-    public List<Hospital> findHospitalByAddress(String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        // 이전 페이지의 마지막 dutyName 값을 가져오기
-        String lastDutyName = getLastDutyNameOnPreviousPage(address1, address2, pageNum);
-        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
-                .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
-                .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
-                .orderBy(MessageUtil.DUTY_NAME)
-                .startAfter(lastDutyName)
-                .limit(10);
         List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
-        return querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
+        log.info("특정 지역의 특정 진료과목의 병원을 조회 (10개 단위) querySnapshot: {}", querySnapshot.size());
+        List<Hospital> total = querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
+        if(total.size() > pageNum * 10) {
+            return total.subList((pageNum - 1) * 10, pageNum * 10);
+        } else {
+            return total.subList((pageNum - 1) * 10, total.size());
+        }
     }
 
-    // 이전 페이지의 마지막 dutyName 값을 가져오기 for 특정 지역의 병원 조회
-    private String getLastDutyNameOnPreviousPage(String address1, String address2, int pageNum) throws ExecutionException, InterruptedException {
-        if (pageNum > 1) {
-            // 이전 페이지의 마지막 hospitalId를 가져오기
-            int previousPageStartIdx = (pageNum - 1) * 10;
-            Query previousPageQuery = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+
+    public List<Hospital> findHospitalByAddress(String address1, String address2, int pageNum, int sortType) throws ExecutionException, InterruptedException {
+        Query query = null;
+        if(sortType == 0) { // 별점 내림차순
+            log.info("별점 내림차순 정렬 후 특정 지역의 병원을 조회 (10개 단위)");
+            query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+                    .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
+                    .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
+                    .orderBy(MessageUtil.RATING, Query.Direction.DESCENDING)
+                    .limit(pageNum * 10);
+        } else if(sortType == 1) { // 이름 오름차순
+            log.info("이름 오름차순 정렬 후 특정 지역의 병원을 조회 (10개 단위)");
+            query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
                     .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
                     .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
                     .orderBy(MessageUtil.DUTY_NAME)
-                    .startAt(previousPageStartIdx)
                     .limit(pageNum * 10);
-
-            List<QueryDocumentSnapshot> previousPageSnapshot = previousPageQuery.get().get().getDocuments();
-            if (!previousPageSnapshot.isEmpty()) {
-                return previousPageSnapshot.get(previousPageSnapshot.size() - 1).getString(MessageUtil.DUTY_NAME);
-            }
+        } else {
+            throw new HospitalException(ResponseCode.BAD_REQUEST);
         }
-        return null; // 첫 페이지인 경우 null 반환
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        log.info("특정 지역의 병원을 조회 (10개 단위) querySnapshot: {}", querySnapshot.size());
+        List<Hospital> total = querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
+        if(total.size() > pageNum * 10) {
+            return total.subList((pageNum - 1) * 10, pageNum * 10);
+        } else {
+            return total.subList((pageNum - 1) * 10, total.size());
+        }
     }
 
     // 특정 병원의 상세정보 조회
@@ -124,7 +115,7 @@ public class HospitalRepositoryImpl implements HospitalRepository {
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
         if (!document.exists()) {
-            throw new RuntimeException("존재하지 않는 병원입니다.");
+            throw new HospitalException(ResponseCode.HOSPITAL_NOT_FOUND);
         }
         return document.toObject(Hospital.class).getDutyName();
     }
