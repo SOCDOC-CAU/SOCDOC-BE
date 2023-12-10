@@ -99,7 +99,7 @@ public class ReviewServiceImpl implements ReviewService {
         File file = new File(dir);
         if (!file.exists()) {
             log.info("이미지 없음: " + imageName);
-            return null;
+            return new byte[]{};
         }
         return Files.readAllBytes(Paths.get(dir));
     }
