@@ -4,10 +4,8 @@ import com.cau.socdoc.domain.Hospital;
 import com.cau.socdoc.domain.Like;
 import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.util.MessageUtil;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -121,7 +119,13 @@ public class HospitalRepositoryImpl implements HospitalRepository {
     }
 
     public String findNameById(String hospitalId) throws ExecutionException, InterruptedException {
+        log.info("병원 이름 조회, hospitalId: {}", hospitalId);
         DocumentReference documentReference = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL).document(hospitalId);
-        return Objects.requireNonNull(documentReference.get().get().toObject(Hospital.class)).getHpid();
+        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentSnapshot document = future.get();
+        if (!document.exists()) {
+            throw new RuntimeException("존재하지 않는 병원입니다.");
+        }
+        return document.toObject(Hospital.class).getDutyName();
     }
 }

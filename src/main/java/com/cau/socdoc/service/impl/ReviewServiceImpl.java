@@ -44,6 +44,8 @@ public class ReviewServiceImpl implements ReviewService {
         List<ResponseReviewDto> responseReviewDtos = new ArrayList<>();
         if (type == 0) {// 특정 유저의 리뷰 조회
             for (String reviewId : reviews.keySet()) {
+                log.info("리뷰 ID: " + reviewId);
+                log.info("리뷰 병원 ID: " + reviews.get(reviewId).getHospitalId());
                 ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
                         .reviewId(reviewId)
                         .name(hospitalRepository.findNameById(reviews.get(reviewId).getHospitalId()))
