@@ -4,6 +4,7 @@ import com.cau.socdoc.domain.Review;
 import com.cau.socdoc.dto.request.CreateReviewDto;
 import com.cau.socdoc.dto.request.UpdateReviewDto;
 import com.cau.socdoc.dto.response.ResponseReviewDto;
+import com.cau.socdoc.repository.HospitalRepository;
 import com.cau.socdoc.repository.ReviewRepository;
 import com.cau.socdoc.repository.UserRepository;
 import com.cau.socdoc.service.ReviewService;
@@ -33,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final HospitalRepository hospitalRepository;
 
     // 리뷰 조회
     @Transactional(readOnly = true)
@@ -40,16 +42,30 @@ public class ReviewServiceImpl implements ReviewService {
         Map<String, Review> reviews = reviewRepository.readReview(userId, type);
         log.info("리뷰 조회 완료: " + userId + " " + reviews.size() + "개");
         List<ResponseReviewDto> responseReviewDtos = new ArrayList<>();
-        for (String reviewId : reviews.keySet()) {
-            ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
-                    .reviewId(reviewId)
-                    .userName(userRepository.findNameById(reviews.get(reviewId).getUserId()))
-                    .createdAt(reviews.get(reviewId).getCreatedAt().toString())
-                    .rating(reviews.get(reviewId).getRating())
-                    .content(reviews.get(reviewId).getContent())
-                    .files(readImage(reviewId))
-                    .build();
-            responseReviewDtos.add(responseReviewDto);
+        if (type == 0) {// 특정 유저의 리뷰 조회
+            for (String reviewId : reviews.keySet()) {
+                ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
+                        .reviewId(reviewId)
+                        .name(hospitalRepository.findNameById(reviews.get(reviewId).getHospitalId()))
+                        .createdAt(reviews.get(reviewId).getCreatedAt())
+                        .rating(reviews.get(reviewId).getRating())
+                        .content(reviews.get(reviewId).getContent())
+                        .files(readImage(reviewId))
+                        .build();
+                responseReviewDtos.add(responseReviewDto);
+            }
+        } else { // 특정 병원의 리뷰 조회
+            for (String reviewId : reviews.keySet()) {
+                ResponseReviewDto responseReviewDto = ResponseReviewDto.builder()
+                        .reviewId(reviewId)
+                        .name(userRepository.findNameById(reviews.get(reviewId).getUserId()))
+                        .createdAt(reviews.get(reviewId).getCreatedAt())
+                        .rating(reviews.get(reviewId).getRating())
+                        .content(reviews.get(reviewId).getContent())
+                        .files(readImage(reviewId))
+                        .build();
+                responseReviewDtos.add(responseReviewDto);
+            }
         }
         return responseReviewDtos;
     }

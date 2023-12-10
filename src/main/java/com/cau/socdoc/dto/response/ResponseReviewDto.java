@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ResponseReviewDto implements Serializable {
 
     private String reviewId; // 리뷰 고유 ID
-    private String userName; // 유저명
+    private String name; // 유저명 혹은 병원명
     private String content; // 내용
     private String createdAt; // 생성일
     private int rating; // 1 ~ 5

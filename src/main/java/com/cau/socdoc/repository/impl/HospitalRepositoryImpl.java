@@ -13,9 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
 public class HospitalRepositoryImpl implements HospitalRepository {
 
@@ -104,8 +106,10 @@ public class HospitalRepositoryImpl implements HospitalRepository {
 
     // 특정 유저가 좋아요한 병원 조회
     public List<Hospital> findHospitalByLike(String userId) throws ExecutionException, InterruptedException {
+        log.info("좋아요한 병원 조회, userId: {}", userId);
         Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_LIKE).whereEqualTo(MessageUtil.USER_ID, userId);
         List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        log.info("좋아요한 병원 query: {}", querySnapshot.size());
         return querySnapshot.stream().map(document -> document.toObject(Like.class).getHospitalId()).map(hospitalId -> {
             try {
                 return findHospitalDetail(hospitalId);
@@ -114,5 +118,10 @@ public class HospitalRepositoryImpl implements HospitalRepository {
             }
             return null;
         }).collect(Collectors.toList());
+    }
+
+    public String findNameById(String hospitalId) throws ExecutionException, InterruptedException {
+        DocumentReference documentReference = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL).document(hospitalId);
+        return Objects.requireNonNull(documentReference.get().get().toObject(Hospital.class)).getHpid();
     }
 }
