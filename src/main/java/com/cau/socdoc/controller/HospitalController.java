@@ -74,4 +74,11 @@ public class HospitalController {
     public ApiResponse<List<ResponsePharmacyDto>> findPharmacyByHospitalId(@RequestParam String hospitalId) throws ExecutionException, InterruptedException {
         return ApiResponse.success(hospitalService.findPharmacyByHospitalId(hospitalId), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
     }
+
+    // 유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 조회
+    @Operation(summary = "유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 조회", description = "유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록을 조회합니다.")
+    @GetMapping("/main")
+    public ApiResponse<List<ResponseSimpleHospitalDto>> findHospitalByMain(@RequestParam String address1, @RequestParam String address2, @RequestParam String code1, @RequestParam String code2, @RequestParam String code3, @RequestParam String code4) throws ExecutionException, InterruptedException {
+        return ApiResponse.success(hospitalService.findHospitalByMain(address1, address2, code1, code2, code3, code4), ResponseCode.HOSPITAL_READ_SUCCESS.getMessage());
+    }
 }

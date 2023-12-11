@@ -19,4 +19,5 @@ public interface HospitalService {
     // 좋아요 관련
     void saveLike(String userId, String hospitalId) throws ExecutionException, InterruptedException;
     void deleteLike(String userId, String hospitalId) throws ExecutionException, InterruptedException;
+    List<ResponseSimpleHospitalDto> findHospitalByMain(String address1, String address2, String code1, String code2, String code3, String code4) throws ExecutionException, InterruptedException;
 }

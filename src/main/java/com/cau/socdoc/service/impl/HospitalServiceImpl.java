@@ -122,6 +122,19 @@ public class HospitalServiceImpl implements HospitalService {
         log.info("유저가 특정 병원에 좋아요 취소 완료: " + userId + " " + hospitalId);
     }
 
+    // 유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseSimpleHospitalDto> findHospitalByMain(String address1, String address2, String code1, String code2, String code3, String code4) throws ExecutionException, InterruptedException {
+        List<Hospital> hospitals = hospitalRepository.findHospitalByMain(address1, address2, code1, code2, code3, code4);
+        log.info("유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 조회 완료: " + address1 + " " + address2 + " " + MessageUtil.codeToHospitalType(code1) + " " + MessageUtil.codeToHospitalType(code2) + " " + MessageUtil.codeToHospitalType(code3) + " " + MessageUtil.codeToHospitalType(code4));
+        List<ResponseSimpleHospitalDto> dtos = new ArrayList<>();
+        for (Hospital hospital : hospitals) {
+            dtos.add(hospitalToSimpleHospitalDto(hospital));
+        }
+        return dtos;
+    }
+
     // 병원의 약국 조회
     @Transactional(readOnly = true)
     public List<ResponsePharmacyDto> findPharmacyByHospitalId(String hospitalId) throws ExecutionException, InterruptedException {

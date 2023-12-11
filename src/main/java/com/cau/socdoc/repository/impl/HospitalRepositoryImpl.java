@@ -119,4 +119,19 @@ public class HospitalRepositoryImpl implements HospitalRepository {
         }
         return document.toObject(Hospital.class).getDutyName();
     }
+
+    // 유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 평점 내림차순으로 조회
+    @Override
+    public List<Hospital> findHospitalByMain(String address1, String address2, String code1, String code2, String code3, String code4) throws ExecutionException, InterruptedException {
+        Query query = FirestoreClient.getFirestore().collection(MessageUtil.COLLECTION_HOSPITAL)
+                .whereEqualTo(MessageUtil.ADDRESS1_HOSPITAL, address1)
+                .whereEqualTo(MessageUtil.ADDRESS2_HOSPITAL, address2)
+                .whereArrayContainsAny(MessageUtil.TYPE_HOSPITAL,
+                        List.of(MessageUtil.codeToHospitalType(code1), MessageUtil.codeToHospitalType(code2), MessageUtil.codeToHospitalType(code3), MessageUtil.codeToHospitalType(code4)))
+                .orderBy(MessageUtil.RATING, Query.Direction.DESCENDING)
+                .limit(10);
+        List<QueryDocumentSnapshot> querySnapshot = query.get().get().getDocuments();
+        log.info("유저의 메인페이지 4개 병원 분과 코드를 받아 병원 목록 조회 querySnapshot: {}", querySnapshot.size());
+        return querySnapshot.stream().map(document -> document.toObject(Hospital.class)).collect(Collectors.toList());
+    }
 }

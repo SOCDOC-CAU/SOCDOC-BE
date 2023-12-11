@@ -13,4 +13,5 @@ public interface HospitalRepository {
     Hospital findHospitalDetail(String hospitalId) throws ExecutionException, InterruptedException;
     List<Hospital> findHospitalByLike(String userId) throws ExecutionException, InterruptedException;
     String findNameById(String hospitalId) throws ExecutionException, InterruptedException;
+    List<Hospital> findHospitalByMain(String address1, String address2, String code1, String code2, String code3, String code4) throws ExecutionException, InterruptedException;
 }
